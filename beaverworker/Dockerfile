@@ -63,6 +63,7 @@ ENV CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
 ENV PATH=/mHapTools:$PATH
 ENV PATH=/qualimap/qualimap_v2.3:$PATH
+ENV PATH=/opt/miniconda3/bin:$PATH
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["source /opt/miniconda3/etc/profile.d/conda.sh && conda activate && /bin/bash -il"]
 
