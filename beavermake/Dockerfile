@@ -35,9 +35,9 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     printf 'root ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
     printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
     cd tmp &&\
-    git clone https://aur.archlinux.org/yay.git &&\
+    git clone https://aur.archlinux.org/yay-bin.git &&\
     cd .. &&\
-    chmod 777 /tmp/yay/ &&\
+    chmod 777 /tmp/yay-bin/ &&\
     chmod +x /usr/sbin/install_yay.sh &&\
     sudo -u builduser install_yay.sh &&\
     rm -rf /tmp/yay/ &&\

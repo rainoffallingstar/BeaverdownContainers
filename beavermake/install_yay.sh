@@ -1,5 +1,5 @@
 #!/bin/sh
 set -e
-cd /tmp/yay
+cd /tmp/yay-bin
 makepkg -si --noconfirm
 cd ~
