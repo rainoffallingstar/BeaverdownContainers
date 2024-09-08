@@ -15,7 +15,7 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
     pacman -S wget --noconfirm &&\
-    mkdir -p qualimap &&\ # 使用 wget 下载文件
+    mkdir -p qualimap && \
     wget -O "qualimap/qualimap_v2.3.zip" https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v2.3.zip &&\
     unzip -d qualimap qualimap/qualimap_v2.3.zip &&\
     rm qualimap/qualimap_v2.3.zip &&\
