@@ -1,23 +1,18 @@
 name: Docker build beaverworker
 
 on:
+  workflow_dispatch:  # 手动触发
   push:
     branches: [ master ]
-  workflow_dispatch:  # 手动触发
-
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: beaverworker
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
+      contents: read  # 仅保留需要的权限
     steps:
-    
-      - name: Check Out Repo 
+      - name: Check Out Repo
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
@@ -37,6 +32,4 @@ jobs:
           context: ./beaverworker
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/beaverworker:latest
-    
-      
-      
+          # 可以考虑添加更多的标签，例如 ${{ github.sha }} 或版本号
