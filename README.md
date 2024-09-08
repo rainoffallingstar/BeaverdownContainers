@@ -1,9 +1,14 @@
 # BeaverdownContainers
 
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml)
+
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml)
+
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml)
+
 Efficient Docker containers for enhancing Beaverdown2 workflow.
 
 Designed for performance and ease of use, BeaverdownContainers streamlines bioinformatics and data analysis tasks.
-
 
 ## beavermake
 
@@ -38,6 +43,7 @@ docker run -it -name beaverworker fallingstar10/beaverworker:latest
 ## beaverstudio
 
 An RStudio server integrated with beaverworker, offering a powerful environment for data analysis.
+
 ``` bash
 docker pull fallingstar10/beaverstudio:latest
 
