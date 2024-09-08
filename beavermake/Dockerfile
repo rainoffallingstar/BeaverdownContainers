@@ -34,7 +34,6 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     passwd -d builduser &&\
     printf 'root ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
     printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudodouers &&\
-    mkdir /home/builduser &&\
     cd tmp &&\
     git clone https://aur.archlinux.org/yay.git &&\
     cd .. &&\
