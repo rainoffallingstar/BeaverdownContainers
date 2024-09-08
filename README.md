@@ -22,7 +22,7 @@ docker pull fallingstar10/beavermake:latest
 dockerR::image_pull("fallingstar10/beavermake:latest")
 
 #then run it
-docker run -it -name beavermake fallingstar10/beavermake:latest
+docker run -it --name beavermake fallingstar10/beavermake:latest
 ```
 
 ## beaverworker
@@ -37,7 +37,7 @@ docker pull fallingstar10/beaverworker:latest
 dockerR::image_pull("fallingstar10/beaverworker:latest")
 
 #then run it
-docker run -it -name beaverworker fallingstar10/beaverworker:latest
+docker run -it --name beaverworker fallingstar10/beaverworker:latest
 ```
 
 ## beaverstudio
@@ -52,5 +52,5 @@ docker pull fallingstar10/beaverstudio:latest
 dockerR::image_pull("fallingstar10/beaverstudio:latest")
 
 #then run it
-docker run -p 8787:8787 -p 8080:8080 -name beaverstudio fallingstar10/beaverstudio:latest
+docker run -p 8787:8787 -p 8080:8080 --name beaverstudio fallingstar10/beaverstudio:latest
 ```
