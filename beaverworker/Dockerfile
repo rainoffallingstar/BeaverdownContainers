@@ -1,5 +1,6 @@
 FROM fallingstar10/beavermake:latest
-RUN yay -S --noconfirm r &&\
+RUN yay -Syu --noconfirm &&\
+    yay -S --noconfirm r &&\
     yay -S --noconfirm miniconda3 &&\
     yay -S --noconfirm fastqc &&\
     yay -S --noconfirm samtools &&\
