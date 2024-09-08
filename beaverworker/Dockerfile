@@ -13,6 +13,13 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm bedtools &&\
     yay -S --noconfirm imagemagick &&\
     yay -S --noconfirm poppler &&\
+    yay -S libxtst --noconfirm &&\
+    pacman -S wget --noconfirm &&\
+    mkdir -p qualimap &&\ # 使用 wget 下载文件
+    wget -O "qualimap/qualimap_v2.3.zip" https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v2.3.zip &&\
+    unzip -d qualimap qualimap/qualimap_v2.3.zip &&\
+    rm qualimap/qualimap_v2.3.zip &&\
+    sed -i 's/-XX:MaxPermSize/-XX:MaxMetaspaceSize/g' /qualimap/qualimap_v2.3/qualimap &&\
     # wgbstools 设置环境变量
     pacman -S python-pandas python-numpy python-scipy --noconfirm &&\
     git clone https://github.com/nloyfer/wgbs_tools.git &&\
@@ -35,7 +42,6 @@ RUN yay -Syu --noconfirm &&\
     conda config --add channels bioconda &&\
     conda config --add channels conda-forge &&\
     conda config --set channel_priority strict &&\
-    conda create -n qualimap -c bioconda qualimap -y &&\
     conda create -n methyldackel -c bioconda methyldackel -y  &&\
     conda create -n bsmap -c bioconda bsmap -y &&\
     yay -Sc --noconfirm &&\
@@ -43,7 +49,7 @@ RUN yay -Syu --noconfirm &&\
     R -e "options ('repos' = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
     R -e "install.packages('pak',repos = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\ 
     R -e "pak::pak('r-lib/ragg#171')" &&\
-    R -e "pak::pkg_install(c('optparse','openxlsx','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
+    R -e "pak::pkg_install(c('optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
     R -e "pak::pak('devtools')" &&\
     R -e "devtools::install_github('mlr-org/mlr3proba')" &&\
@@ -51,11 +57,12 @@ RUN yay -Syu --noconfirm &&\
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" &&\
     R -e "pak::cache_clean()"  && \
     rm -rf /tmp/*
-ENV PATH=wgbs_tools:$PATH
-ENV PATH=UXM_deconv:$PATH
+ENV PATH=/wgbs_tools:$PATH
+ENV PATH=/UXM_deconv:$PATH
 ENV CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
-ENV LD_LIBRARY_PATH=mHapTools/htslib-1.10.2/lib
-ENV PATH=mHapTools:$PATH
+ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
+ENV PATH=/mHapTools:$PATH
+ENV PATH=/qualimap/qualimap_v2.3:$PATH
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["source /opt/miniconda3/etc/profile.d/conda.sh && conda activate && /bin/bash -il"]
 
