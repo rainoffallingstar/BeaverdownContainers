@@ -43,6 +43,9 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     rm -rf /tmp/yay/ &&\
     rm /usr/sbin/install_yay.sh &&\
     sudo -u builduser yay -Sc --noconfirm &&\
-    yay -Syu --noconfirm &&\
-    yay -S --noconfirm snakemake 
+    mv /usr/bin/yay /usr/bin/yay-pure 
+COPY yay /usr/bin/yay
+COPY yay-install /usr/bin/yay-install
+RUN yay -Syu --noconfirm &&\
+    yay -S snakemake --noconfirm
 CMD bash
