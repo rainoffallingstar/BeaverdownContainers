@@ -46,6 +46,7 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     mv /usr/bin/yay /usr/bin/yay-pure 
 COPY yay /usr/bin/yay
 COPY yay-install /usr/bin/yay-install
-RUN yay -Syu --noconfirm &&\
+RUN chmod a+x /usr/sbin/yay &&\
+    yay -Syu --noconfirm &&\
     yay -S snakemake --noconfirm
 CMD bash
