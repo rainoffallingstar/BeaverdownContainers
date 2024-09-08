@@ -1,9 +1,14 @@
 name: Docker build beavermake
 
 on:
+  schedule:
+    - cron:  '0 6 * * 5'  # 每周五，早上 6 点（UTC 时间）
   workflow_dispatch:  # 手动触发
   push:
-    branches: [ master ]
+    branches: [ main ]
+    paths:
+      - 'beavermake/**'
+      - '.github/workflows/**'
 
 jobs:
   docker:
