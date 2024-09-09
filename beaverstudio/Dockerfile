@@ -1,6 +1,5 @@
 FROM fallingstar10/beaverworker:latest
 
-ENV R_VERSION="4.4.1"
 ENV R_HOME="/usr/lib64/R"
 ENV TZ="Etc/UTC"
 ENV LANG=en_US.UTF-8
@@ -50,6 +49,7 @@ RUN DEFAULT_USER=${DEFAULT_USER:-"builduser"} &&\
     cp /rocker_scripts/init_set_env.sh /etc/cont-init.d/01_set_env &&\
     cp /rocker_scripts/init_userconf.sh /etc/cont-init.d/02_userconf &&\
     cp /rocker_scripts/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper 
+
 EXPOSE 8080
 EXPOSE 8787
 CMD ["/init"]
