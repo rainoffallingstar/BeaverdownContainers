@@ -38,7 +38,6 @@ RUN yay -Syu --noconfirm &&\
     cd .. &&\
     source /opt/miniconda3/etc/profile.d/conda.sh && conda activate &&\
     echo "source /opt/miniconda3/etc/profile.d/conda.sh && conda activate" > /home/builduser/.bashrc &&\
-    conda intit &&\
     export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1 &&\
     conda config --add channels bioconda &&\
     conda config --add channels conda-forge &&\
