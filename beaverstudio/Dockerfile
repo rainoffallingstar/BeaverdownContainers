@@ -19,7 +19,8 @@ RUN tar hzxf /tmp/s6-overlay-x86.tar.gz  -C / --exclude=usr/bin/execlineb &&\
     rm -rf /tmp/s6-overlay-x86.tar.gz  &&\
     yay -S --noconfirm rstudio-server-bin &&\
     R -e "print(list.files('rocker_scripts'))" &&\
-    R -e "print(list.files('etc/rstudio'))"
+    R -e "print(list.files('etc/rstudio'))" &&\
+    mkdir /etc/rstudio/fonts
 
 RUN DEFAULT_USER=${DEFAULT_USER:-"builduser"} &&\
     ln -fs /usr/lib/rstudio-server/bin/rstudio-server /usr/local/bin &&\

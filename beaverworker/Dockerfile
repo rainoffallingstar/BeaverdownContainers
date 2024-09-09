@@ -56,7 +56,7 @@ RUN yay -Syu --noconfirm &&\
     R -e "tinytex::install_tinytex(force = TRUE)" &&\
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" &&\
     R -e "pak::cache_clean()"  && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* 
 ENV PATH=/wgbs_tools:$PATH
 ENV PATH=/UXM_deconv:$PATH
 ENV CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
