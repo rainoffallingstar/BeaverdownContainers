@@ -54,3 +54,17 @@ dockerR::image_pull("fallingstar10/beaverstudio:latest")
 #then run it
 docker run -p 8787:8787 -p 8080:8080 --name beaverstudio fallingstar10/beaverstudio:latest
 ```
+## beaverjupyter
+
+An jupyterlab server integrated with beaverworker, offering a powerful environment for data analysis.
+
+``` bash
+docker pull fallingstar10/beaverjupyter:latest
+
+#or
+
+dockerR::image_pull("fallingstar10/beaverjupyter:latest")
+
+#then run it
+docker run -p 8889:8889  --name beaverjupyter fallingstar10/beaverjupyter:latest
+```
