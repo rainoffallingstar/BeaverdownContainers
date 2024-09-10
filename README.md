@@ -1,10 +1,8 @@
 # BeaverdownContainers
 
-[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml)
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beavermake.yml) [![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml) 
 
-[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml)
-
-[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml) [![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml) 
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml) [![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml)
 
 Efficient Docker containers for enhancing Beaverdown2 workflow.
 
