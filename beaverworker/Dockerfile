@@ -8,6 +8,8 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm cutadapt &&\
     yay -S --noconfirm sambamba &&\
     yay -S --noconfirm htslib &&\
+    yay -S --noconfirm hisat2-bin &&\
+    yay -S --noconfirm picard-tools &&\
     yay -S --noconfirm tabix &&\
     yay -S --noconfirm seqkit &&\
     yay -S --noconfirm bedtools &&\
@@ -27,6 +29,7 @@ RUN yay -Syu --noconfirm &&\
     python setup.py &&\
     cd .. &&\
     git clone https://github.com/nloyfer/UXM_deconv.git &&\
+    git clone https://github.com/FelixKrueger/Bismark &&\
     git clone https://github.com/butyuhao/mHapTools.git &&\
     cd mHapTools &&\
     cd htslib-1.10.2 &&\
@@ -52,6 +55,7 @@ RUN yay -Syu --noconfirm &&\
     R -e "pak::pkg_install(c('optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
     R -e "pak::pak('devtools')" &&\
+    R -e "pak::pak('NKI-GCF/XenofilteR')" &&\
     R -e "devtools::install_github('mlr-org/mlr3proba')" &&\
     R -e "tinytex::install_tinytex(force = TRUE)" &&\
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" &&\
@@ -65,6 +69,7 @@ ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
 ENV PATH=/mHapTools:$PATH
 ENV PATH=/qualimap/qualimap_v2.3:$PATH
 ENV PATH=/opt/miniconda3/bin:$PATH
+ENV PATH=/Bismark:$PATH
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["source /opt/miniconda3/etc/profile.d/conda.sh && conda activate && /bin/bash -il"]
 
