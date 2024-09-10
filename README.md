@@ -4,7 +4,7 @@
 
 [![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverworker.yml)
 
-[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml)
+[![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverstudio.yml) [![](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml/badge.svg)](https://github.com/rainoffallingstar/BeaverdownContainers/actions/workflows/beaverjupyter.yml) 
 
 Efficient Docker containers for enhancing Beaverdown2 workflow.
 
@@ -54,6 +54,7 @@ dockerR::image_pull("fallingstar10/beaverstudio:latest")
 #then run it
 docker run -p 8787:8787 -p 8080:8080 --name beaverstudio fallingstar10/beaverstudio:latest
 ```
+
 ## beaverjupyter
 
 An jupyterlab server integrated with beaverworker, offering a powerful environment for data analysis.
