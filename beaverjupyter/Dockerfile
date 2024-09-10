@@ -5,5 +5,5 @@ RUN pacman -S --noconfirm jupyterlab &&\
 
 EXPOSE 8889
 
-CMD ["jupyter-lab --no-browser --port 8889"]
+CMD ["jupyter-lab --no-browser --allow-root --port 8889"]
 
