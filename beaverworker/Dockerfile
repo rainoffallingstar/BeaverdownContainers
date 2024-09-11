@@ -44,8 +44,8 @@ RUN yay -Syu --noconfirm &&\
     conda config --add channels bioconda &&\
     conda config --add channels conda-forge &&\
     conda config --set channel_priority strict &&\
-    conda create -n methyldackel -c bioconda methyldackel -y  &&\
-    conda create -n bsmap -c bioconda bsmap -y &&\
+    #conda create -n methyldackel -c bioconda methyldackel -y  &&\
+    #conda create -n bsmap -c bioconda bsmap -y &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     mkdir picard &&\
     wget -O "picard/picard.jar" https://github.com/broadinstitute/picard/releases/download/3.2.0/picard.jar &&\
@@ -73,7 +73,9 @@ ENV PATH=/mHapTools:$PATH
 ENV PATH=/qualimap/qualimap_v2.3:$PATH
 ENV PATH=/opt/miniconda3/bin:$PATH
 ENV PATH=/Bismark:$PATH
+# 设置java 以无GUI形式运行jar文件
+ENV JAVA_OPTS="-Djava.awt.headless=true"
 ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["source /opt/miniconda3/etc/profile.d/conda.sh && conda activate && /bin/bash -il"]
+CMD ["/bin/bash -il"]
 
 
