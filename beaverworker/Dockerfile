@@ -52,7 +52,7 @@ RUN yay -Syu --noconfirm &&\
     conda clean --all &&\
     R -e "options ('repos' = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
     R -e "install.packages('pak',repos = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\ 
-    R -e "pak::pak('r-lib/ragg#171')" &&\
+    R -e "pak::pak('r-lib/ragg')" &&\
     R -e "pak::pkg_install(c('optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
     R -e "pak::pak('devtools')" &&\
@@ -66,7 +66,8 @@ RUN yay -Syu --noconfirm &&\
 ENV PATH=/wgbs_tools:$PATH
 ENV PATH=/UXM_deconv:$PATH
 ENV CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
-ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
+#remove mHap ENV,note: set it alone when using it.
+#ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
 ENV PATH=/mHapTools:$PATH
 ENV PATH=/qualimap/qualimap_v2.3:$PATH
 ENV PATH=/opt/miniconda3/bin:$PATH
