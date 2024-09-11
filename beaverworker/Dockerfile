@@ -22,12 +22,11 @@ RUN yay -Syu --noconfirm &&\
     rm qualimap/qualimap_v2.3.zip &&\
     sed -i 's/-XX:MaxPermSize/-XX:MaxMetaspaceSize/g' /qualimap/qualimap_v2.3/qualimap &&\
     # wgbstools 设置环境变量
-    pacman -S python-pandas python-numpy python-scipy python-pip --noconfirm &&\
+    pacman -S python-pandas python-numpy python-scipy  --noconfirm &&\
     git clone https://github.com/nloyfer/wgbs_tools.git &&\
     cd wgbs_tools &&\
     python setup.py &&\
     cd .. &&\
-    pip install pyfastx &&\
     git clone https://github.com/nloyfer/UXM_deconv.git &&\
     git clone https://github.com/FelixKrueger/Bismark &&\
     git clone https://github.com/butyuhao/mHapTools.git &&\
@@ -47,6 +46,7 @@ RUN yay -Syu --noconfirm &&\
     conda config --set channel_priority strict &&\
     conda create -n methyldackel -c bioconda methyldackel -y  &&\
     conda create -n bsmap -c bioconda bsmap -y &&\
+    conda create -n pyfastx -c bioconda pyfastx -y &&\
     mkdir picard &&\
     wget -O "picard/picard.jar" https://github.com/broadinstitute/picard/releases/download/3.2.0/picard.jar &&\
     yay -Sc --noconfirm &&\
