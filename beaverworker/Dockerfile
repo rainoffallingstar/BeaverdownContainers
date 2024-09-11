@@ -22,7 +22,7 @@ RUN yay -Syu --noconfirm &&\
     rm qualimap/qualimap_v2.3.zip &&\
     sed -i 's/-XX:MaxPermSize/-XX:MaxMetaspaceSize/g' /qualimap/qualimap_v2.3/qualimap &&\
     # wgbstools 设置环境变量
-    pacman -S python-pandas python-numpy python-scipy --noconfirm &&\
+    pacman -S python-pandas python-numpy python-scipy python-pip --noconfirm &&\
     git clone https://github.com/nloyfer/wgbs_tools.git &&\
     cd wgbs_tools &&\
     python setup.py &&\
