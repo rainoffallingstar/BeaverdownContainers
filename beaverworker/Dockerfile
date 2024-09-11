@@ -27,6 +27,7 @@ RUN yay -Syu --noconfirm &&\
     cd wgbs_tools &&\
     python setup.py &&\
     cd .. &&\
+    pip install pyfastx &&\
     git clone https://github.com/nloyfer/UXM_deconv.git &&\
     git clone https://github.com/FelixKrueger/Bismark &&\
     git clone https://github.com/butyuhao/mHapTools.git &&\
