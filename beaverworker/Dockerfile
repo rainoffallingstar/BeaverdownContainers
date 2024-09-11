@@ -9,7 +9,6 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm sambamba &&\
     yay -S --noconfirm htslib &&\
     yay -S --noconfirm hisat2-bin &&\
-    yay -S --noconfirm picard-tools &&\
     yay -S --noconfirm tabix &&\
     yay -S --noconfirm seqkit &&\
     yay -S --noconfirm bedtools &&\
@@ -47,6 +46,8 @@ RUN yay -Syu --noconfirm &&\
     conda config --set channel_priority strict &&\
     conda create -n methyldackel -c bioconda methyldackel -y  &&\
     conda create -n bsmap -c bioconda bsmap -y &&\
+    mkdir picard &&\
+    wget -O "picard/picard.jar" https://github.com/broadinstitute/picard/releases/download/3.2.0/picard.jar &&\
     yay -Sc --noconfirm &&\
     conda clean --all &&\
     R -e "options ('repos' = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
