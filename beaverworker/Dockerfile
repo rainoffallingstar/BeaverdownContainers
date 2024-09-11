@@ -8,7 +8,7 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm cutadapt &&\
     yay -S --noconfirm sambamba &&\
     yay -S --noconfirm htslib &&\
-    yay -S --noconfirm hisat2-bin &&\
+    yay -S --noconfirm bowtie2-bin &&\
     yay -S --noconfirm tabix &&\
     yay -S --noconfirm seqkit &&\
     yay -S --noconfirm bedtools &&\
