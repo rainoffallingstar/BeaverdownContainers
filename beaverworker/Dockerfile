@@ -58,6 +58,7 @@ RUN yay -Syu --noconfirm &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
     R -e "pak::pak('devtools')" &&\
     R -e "pak::pak('NKI-GCF/XenofilteR')" &&\
+    R -e "pak::pak('methylKit')" &&\
     R -e "devtools::install_github('mlr-org/mlr3proba')" &&\
     R -e "tinytex::install_tinytex(force = TRUE)" &&\
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" &&\
