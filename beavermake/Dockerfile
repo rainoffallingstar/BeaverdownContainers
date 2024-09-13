@@ -29,6 +29,7 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     which \
     gcc-fortran \
     cmake \
+    fastfetch \
     --noconfirm && pacman -Sc --noconfirm &&\
     useradd builduser -m &&\
     passwd -d builduser &&\
