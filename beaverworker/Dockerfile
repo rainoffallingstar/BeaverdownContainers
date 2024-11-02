@@ -48,7 +48,7 @@ RUN yay -Syu --noconfirm &&\
     #conda create -n bsmap -c bioconda bsmap -y &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
-    conda create -n star -c bioconda star=2.7.11b -y &&\
+    conda create -n star -c bioconda star -y &&\
     conda run -n clubcpg pip install clubcpg &&\
     mkdir picard &&\
     wget -O "picard/picard.jar" https://github.com/broadinstitute/picard/releases/download/3.2.0/picard.jar &&\
