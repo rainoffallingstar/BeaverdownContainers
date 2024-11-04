@@ -13,6 +13,8 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm seqkit &&\
     yay -S --noconfirm bedtools &&\
     yay -S --noconfirm imagemagick &&\
+    yay -S --noconfirm gatk-bin &&\
+    yay -S --noconfirm bwa &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
     pacman -S wget --noconfirm &&\
