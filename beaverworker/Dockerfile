@@ -1,5 +1,7 @@
 FROM fallingstar10/beavermake:latest
-RUN yay -Syu --noconfirm &&\
+RUN cd /opt && wget -O cellranger-8.0.1.tar.xz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-8.0.1.tar.xz?Expires=1730940035&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=AWvjLh4PB8UwODQVOkuv-UkR4VTLr43PLPGsBraOzW1S681R6dqDjhM5GoCRJObdkTM0l7s2llC6geMnPjEcppteQieUJWLEWS9mmtqR9IQi9CmlBxIlPhrz-QZvsauaOMHglMT3Dqv4-2hb4HnyaIj7TfhGlvwA286yihBZqOlnoLce27Sp3OZfDNWEKXaRkELaVEStahzQq~RLSgrmwc-iyz5rk3ocCwOdgr2xoENnIzUxY8Sv-FGeRANN5PehRNQmcQr6I5jnjO2-zfAsfLpEb3C1LhPxURTxJOhncmFLsrMuCWifeYJ9NIn2CEsQut62FwPDGD4x10AbbCjf~w__" && \
+    tar -xvf cellranger-8.0.1.tar.xz && rm cellranger-8.0.1.tar.xz && export PATH=/opt/cellranger-8.0.1:$PATH && cd  cellranger-8.0.1 && ls && ./cellranger testrun --id=tiny && \
+    cd .. && cd .. && yay -Syu --noconfirm &&\
     yay -S --noconfirm r &&\
     yay -S --noconfirm miniconda3 &&\
     yay -S --noconfirm fastqc &&\
@@ -40,8 +42,6 @@ RUN yay -Syu --noconfirm &&\
     cd .. &&\ 
     g++ -o mhaptools  haptk.cpp convert.cpp mhap.cpp merge.cpp beta.cpp summary.cpp utils.cpp -I ./htslib-1.10.2/htslib -I ./include  -L ./htslib-1.10.2/ -lhts -std=c++11 &&\
     cd .. &&\
-    cd /opt && wget -O cellranger-8.0.1.tar.xz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-8.0.1.tar.xz?Expires=1730940035&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=AWvjLh4PB8UwODQVOkuv-UkR4VTLr43PLPGsBraOzW1S681R6dqDjhM5GoCRJObdkTM0l7s2llC6geMnPjEcppteQieUJWLEWS9mmtqR9IQi9CmlBxIlPhrz-QZvsauaOMHglMT3Dqv4-2hb4HnyaIj7TfhGlvwA286yihBZqOlnoLce27Sp3OZfDNWEKXaRkELaVEStahzQq~RLSgrmwc-iyz5rk3ocCwOdgr2xoENnIzUxY8Sv-FGeRANN5PehRNQmcQr6I5jnjO2-zfAsfLpEb3C1LhPxURTxJOhncmFLsrMuCWifeYJ9NIn2CEsQut62FwPDGD4x10AbbCjf~w__" && \
-    tar -xvf cellranger-8.0.1.tar.xz && rm cellranger-8.0.1.tar.xz && export PATH=/opt/cellranger-8.0.1:$PATH && cellranger testrun --id=tiny && \
     source /opt/miniconda3/etc/profile.d/conda.sh && conda activate &&\
     echo "source /opt/miniconda3/etc/profile.d/conda.sh && conda activate" > /home/builduser/.bashrc &&\
     export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1 &&\
