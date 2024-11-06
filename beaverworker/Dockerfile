@@ -1,8 +1,5 @@
 FROM fallingstar10/beavermake:latest
-RUN pacman -S wget --noconfirm &&\
-    cd /opt && wget -O cellranger-8.0.1.tar.xz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-8.0.1.tar.xz?Expires=1730940035&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=AWvjLh4PB8UwODQVOkuv-UkR4VTLr43PLPGsBraOzW1S681R6dqDjhM5GoCRJObdkTM0l7s2llC6geMnPjEcppteQieUJWLEWS9mmtqR9IQi9CmlBxIlPhrz-QZvsauaOMHglMT3Dqv4-2hb4HnyaIj7TfhGlvwA286yihBZqOlnoLce27Sp3OZfDNWEKXaRkELaVEStahzQq~RLSgrmwc-iyz5rk3ocCwOdgr2xoENnIzUxY8Sv-FGeRANN5PehRNQmcQr6I5jnjO2-zfAsfLpEb3C1LhPxURTxJOhncmFLsrMuCWifeYJ9NIn2CEsQut62FwPDGD4x10AbbCjf~w__" && \
-    tar -xvf cellranger-8.0.1.tar.xz && rm cellranger-8.0.1.tar.xz && export PATH=/opt/cellranger-8.0.1:$PATH && cd  cellranger-8.0.1 && ls && ./cellranger testrun --id=tiny && \
-    cd .. && cd .. && yay -Syu --noconfirm &&\
+RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm r &&\
     yay -S --noconfirm miniconda3 &&\
     yay -S --noconfirm fastqc &&\
@@ -20,6 +17,7 @@ RUN pacman -S wget --noconfirm &&\
     yay -S --noconfirm bwa &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
+    pacman -S wget --noconfirm &&\
     mkdir -p qualimap && \
     wget -O "qualimap/qualimap_v2.3.zip" https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v2.3.zip &&\
     unzip -d qualimap qualimap/qualimap_v2.3.zip &&\
