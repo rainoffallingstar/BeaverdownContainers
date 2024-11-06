@@ -51,6 +51,7 @@ RUN yay -Syu --noconfirm &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
     conda create -n star -c bioconda star -y &&\
+    conda create -n scanpy -c conda-forge scanpy python-igraph leidenalg -y &&\
     conda run -n clubcpg pip install clubcpg &&\
     mkdir picard &&\
     wget -O "picard/picard.jar" https://github.com/broadinstitute/picard/releases/download/3.2.0/picard.jar &&\
