@@ -17,7 +17,7 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm bwa &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
-    yay -S mysql --noconfirm && \
+    pacman -S mariadb mariadb-clients --noconfirm && \
     pacman -S wget --noconfirm &&\
     mkdir -p qualimap && \
     wget -O "qualimap/qualimap_v2.3.zip" https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v2.3.zip &&\
@@ -53,6 +53,7 @@ RUN yay -Syu --noconfirm &&\
     conda create -n clubcpg python=3.10 &&\
     conda create -n star -c bioconda star -y &&\
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
+    ln -s /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 &&\ 
     conda create -n scanpy -c conda-forge scanpy python-igraph leidenalg -y &&\
     conda run -n clubcpg pip install clubcpg &&\
     mkdir picard &&\
