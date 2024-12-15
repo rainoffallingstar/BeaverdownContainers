@@ -16,6 +16,7 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm gatk-bin &&\
     yay -S --noconfirm bwa &&\
     yay -S --noconfirm poppler &&\
+    yay -S --noconfirm multiqc &&\
     yay -S libxtst --noconfirm &&\
     pacman -S mariadb mariadb-clients --noconfirm && \
     pacman -S wget --noconfirm &&\
@@ -52,6 +53,7 @@ RUN yay -Syu --noconfirm &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
     conda create -n star -c bioconda star -y &&\
+    conda create -n htseq -c bioconda htseq -y &&\
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
     ln -s /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 &&\ 
     conda create -n scanpy -c conda-forge scanpy python-igraph leidenalg -y &&\
@@ -63,11 +65,13 @@ RUN yay -Syu --noconfirm &&\
     R -e "options ('repos' = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
     R -e "install.packages('pak',repos = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\ 
     R -e "pak::pak('r-lib/ragg')" &&\
-    R -e "pak::pkg_install(c('optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
+    R -e "pak::pkg_install(c('optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma','BSgenome','BSgenome.Hsapiens.UCSC.hg19','bsseq'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
     R -e "pak::pak('devtools')" &&\
     R -e "pak::pak('NKI-GCF/XenofilteR')" &&\
-    R -e "pak::pak('methylKit')" &&\
+    R -e "pak::pak('CompEpigen/scMethrix')" &&\
+    R -e "pak::pak('CompEpigen/methrix')" &&\
+    R -e "pak::pak('blastula')" &&\
     R -e "devtools::install_github('mlr-org/mlr3proba')" &&\
     R -e "tinytex::install_tinytex(force = TRUE)" &&\
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" &&\
