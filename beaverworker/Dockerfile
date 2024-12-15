@@ -16,7 +16,6 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm gatk-bin &&\
     yay -S --noconfirm bwa &&\
     yay -S --noconfirm poppler &&\
-    yay -S --noconfirm multiqc &&\
     yay -S libxtst --noconfirm &&\
     pacman -S mariadb mariadb-clients --noconfirm && \
     pacman -S wget --noconfirm &&\
@@ -52,6 +51,7 @@ RUN yay -Syu --noconfirm &&\
     #conda create -n bsmap -c bioconda bsmap -y &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
+    conda create -n multiqc -c bioconda multiqc -y &&\
     conda create -n star -c bioconda star -y &&\
     conda create -n htseq -c bioconda htseq -y &&\
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
