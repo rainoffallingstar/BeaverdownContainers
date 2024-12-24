@@ -52,7 +52,9 @@ RUN yay -Syu --noconfirm &&\
     #conda create -n bsmap -c bioconda bsmap -y &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
-    conda install -n base  -c bioconda multiqc -y &&\
+    conda create -n multiqc  -c bioconda multiqc -y &&\
+    conda install -n multiqc python=3.12.3 -y &&\
+    conda install -n multiqc numpy=1.26.4 -y &&\
     conda create -n star -c bioconda star -y &&\
     conda create -n htseq -c bioconda htseq -y &&\
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
