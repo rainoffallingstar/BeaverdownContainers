@@ -50,6 +50,7 @@ RUN yay -Syu --noconfirm &&\
     conda config --set channel_priority strict &&\
     #conda create -n methyldackel -c bioconda methyldackel -y  &&\
     #conda create -n bsmap -c bioconda bsmap -y &&\
+    conda create -n py27 python=2.7 &&\
     conda create -n pyfastx -c bioconda pyfastx -y &&\
     conda create -n clubcpg python=3.10 &&\
     conda create -n multiqc  -c bioconda multiqc -y &&\
