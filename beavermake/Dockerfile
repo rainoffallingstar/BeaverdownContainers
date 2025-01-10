@@ -53,7 +53,7 @@ RUN chmod a+x /usr/sbin/yay &&\
     pacman -S python python-uv --noconfirm &&\
     python -m ensurepip --upgrade &&\
     python -m pip install --upgrade setuptools &&\
-    sudo -u builduser uv pip install --system yte &&\
+    python -m pip install yte --break-system-packages &&\
     yay -S snakemake --noconfirm &&\
     yay -Sc --noconfirm
 CMD bash
