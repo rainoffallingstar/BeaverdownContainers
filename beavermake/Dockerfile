@@ -48,11 +48,9 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     mv /usr/bin/yay /usr/bin/yay-pure 
 COPY yay /usr/bin/yay
 COPY yay-install /usr/bin/yay-install
-COPY yte/PKGBUILD yte/PKGBUILD
 RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
     pacman -S python python-uv --noconfirm &&\
-    cd yte && sudo -u builduser makepkg --skipchecksums -s && sudo -u builduser makepkg -i &&\
     yay -S snakemake --noconfirm &&\
     yay -Sc --noconfirm
 CMD bash
