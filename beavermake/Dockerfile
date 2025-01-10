@@ -50,11 +50,8 @@ COPY yay /usr/bin/yay
 COPY yay-install /usr/bin/yay-install
 RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
-    pacman -S python --noconfirm &&\
-    git clone https://github.com/yte-template-engine/yte.git && cd yte &&\
-    python -m build --wheel --no-isolation &&\ 
-    python -m installer dist/*.whl &&\
-    cd .. &&\
+    pacman -S python python-uv --noconfirm &&\
+    uv pip install yte --system &&\
     yay -S snakemake --noconfirm &&\
     yay -Sc --noconfirm
 CMD bash
