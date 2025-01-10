@@ -51,6 +51,7 @@ COPY yay-install /usr/bin/yay-install
 RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
     pacman -S python python-uv --noconfirm &&\
+    sudo -u builduser uv pip install --system yte &&\
     yay -S snakemake --noconfirm &&\
     yay -Sc --noconfirm
 CMD bash
