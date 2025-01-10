@@ -52,7 +52,7 @@ COPY yte/PKGBUILD yte/PKGBUILD
 RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
     pacman -S python python-uv --noconfirm &&\
-    cd yte && yay -Syu --noconfirm --needed . &&\
+    cd yte && sudo -u builduser makepkg --skipchecksums -s && sudo -u builduser makepkg -i &&\
     yay -S snakemake --noconfirm &&\
     yay -Sc --noconfirm
 CMD bash
