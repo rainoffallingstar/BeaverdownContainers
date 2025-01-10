@@ -50,7 +50,7 @@ COPY yay /usr/bin/yay
 COPY yay-install /usr/bin/yay-install
 RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
-    pacman -S python python-uv python-pip python-datrie  python-docutils --noconfirm &&\
+    pacman -S python python-uv python-pip python-datrie  python-docutils  python-markupsafe python-jinja --noconfirm &&\
     pip install yte --break-system-packages &&\
     pip install snakemake --break-system-packages &&\
     yay -Sc --noconfirm
