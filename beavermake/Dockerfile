@@ -52,6 +52,6 @@ RUN chmod a+x /usr/sbin/yay &&\
     yay -Syu --noconfirm &&\
     pacman -S python python-uv python-pip --noconfirm &&\
     pip install yte --break-system-packages &&\
-    yay -S snakemake --noconfirm &&\
+    pip install snakemake --break-system-packages &&\
     yay -Sc --noconfirm
 CMD bash
