@@ -1,5 +1,5 @@
 FROM fallingstar10/beavermake:latest
-RUN yay -Syu --noconfirm &&\
+RUN yay -Sy --noconfirm &&\
     yay -S --noconfirm r &&\
     yay -S --noconfirm miniconda3 &&\
     yay -S --noconfirm fastqc &&\
