@@ -18,7 +18,7 @@ RUN yay -Syu --noconfirm &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
     yay -S seqtk --noconfirm &&\
-    yay -S rustup && rustup default stable && cargo install ggetrs &&\
+    yay -S --noconfirm rustup && rustup default stable && cargo install ggetrs &&\
     pacman -S mariadb mariadb-clients --noconfirm && \
     pacman -S wget --noconfirm &&\
     mkdir -p qualimap && \
