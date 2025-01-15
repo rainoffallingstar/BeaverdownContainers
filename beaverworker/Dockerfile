@@ -88,6 +88,7 @@ ENV PATH=/UXM_deconv:$PATH
 ENV CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
 # add root install cargo tools
 ENV PATH=/root/.cargo/bin:$PATH
+ENV PATH=/home/builduser/.cargo/bin:$PATH
 #remove mHap ENV,note: set it alone when using it.
 #ENV LD_LIBRARY_PATH=/mHapTools/htslib-1.10.2/lib
 ENV PATH=/mHapTools:$PATH

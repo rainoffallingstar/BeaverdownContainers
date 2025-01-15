@@ -49,8 +49,13 @@ RUN DEFAULT_USER=${DEFAULT_USER:-"builduser"} &&\
     yay -Sc --noconfirm &&\
     cp /rocker_scripts/init_set_env.sh /etc/cont-init.d/01_set_env &&\
     cp /rocker_scripts/init_userconf.sh /etc/cont-init.d/02_userconf &&\
-    cp /rocker_scripts/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper 
+    cp /rocker_scripts/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper &&\
+    useradd yanhuazheng -m &&\
+    passwd -d yanhuazheng &&\
+    printf 'yanhuazheng ALL=(ALL) ALL\n' | tee -a /etc/sudoers 
 
+# add cargo PATH for yanhuazheng
+ENV PATH=/home/yanhuazheng/.cargo/bin:$PATH
 EXPOSE 8080
 EXPOSE 8787
 CMD ["/init"]
