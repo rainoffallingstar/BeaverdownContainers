@@ -18,6 +18,7 @@ RUN yay -Sy --noconfirm &&\
     yay -S --noconfirm poppler &&\
     yay -S libxtst --noconfirm &&\
     yay -S seqtk --noconfirm &&\
+    yay -S aliyunpan-go --noconfirm &&\
     yay -S --noconfirm rustup && rustup default stable && cargo install ggetrs &&\
     pacman -S mariadb mariadb-clients --noconfirm && \
     pacman -S wget --noconfirm &&\
