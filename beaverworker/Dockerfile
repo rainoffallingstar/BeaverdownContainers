@@ -41,7 +41,7 @@ RUN yay -Sy --noconfirm &&\
     ./configure --prefix=`pwd` &&\
     make &&\
     make install &&\
-    cd .. &&\ 
+    cd .. &&\
     g++ -o mhaptools  haptk.cpp convert.cpp mhap.cpp merge.cpp beta.cpp summary.cpp utils.cpp -I ./htslib-1.10.2/htslib -I ./include  -L ./htslib-1.10.2/ -lhts -std=c++11 &&\
     cd .. &&\
     source /opt/miniconda3/etc/profile.d/conda.sh && conda activate &&\
@@ -61,7 +61,7 @@ RUN yay -Sy --noconfirm &&\
     conda create -n star -c bioconda star -y &&\
     conda create -n htseq -c bioconda htseq -y &&\
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
-    ln -s /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 &&\ 
+    ln -s /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 &&\
     conda create -n scanpy -c conda-forge scanpy python-igraph leidenalg -y &&\
     conda run -n clubcpg pip install clubcpg &&\
     mkdir picard &&\
@@ -69,7 +69,7 @@ RUN yay -Sy --noconfirm &&\
     yay -Sc --noconfirm &&\
     conda clean --all &&\
     R -e "options ('repos' = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
-    R -e "install.packages('pak',repos = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\ 
+    R -e "install.packages('pak',repos = c(CRAN ='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" &&\
     R -e "pak::pak('r-lib/ragg')" &&\
     R -e "pak::pkg_install(c('DT','shinyWidgets','shiny','bslib','optparse','openxlsx','NOISeq','XML','Repitools','Rsamtools','rtracklayer','R6','reticulate', 'GSVA','graphite','igraph','ggraph','TCGAbiolinks','SummarizedExperiment','doParallel','yaml','tinytex','KEGGgraph', 'plotly','pROC','sva','glue','fs','png','reshape2','readxl','sampling','pdftools','umap','gridExtra','ggpubr','GenomicRanges','data.table','clusterProfiler','org.Hs.eg.db','msigdbr','xlsx','KEGGREST','GenomicDataCommons','foreach','doMC','Seurat', 'dbplyr', 'RColorBrewer','rjson','tidyverse','mlr3verse','limma','BSgenome','BSgenome.Hsapiens.UCSC.hg19','bsseq'),upgrade = TRUE,ask= FALSE, dependencies = NA)"  &&\
     R -e "pak::pkg_install(c('mlr-org/mlr3extralearners@*release'),upgrade = TRUE,ask= FALSE, dependencies = NA)" &&\
@@ -98,6 +98,8 @@ ENV PATH=/opt/miniconda3/bin:$PATH
 ENV PATH=/Bismark:$PATH
 # 设置java 以无GUI形式运行jar文件
 ENV JAVA_OPTS="-Djava.awt.headless=true"
+# 设置bash输出R进度条
+ENV R_PROGRESSR_ENABLE=TRUE
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/bin/bash -il"]
 
