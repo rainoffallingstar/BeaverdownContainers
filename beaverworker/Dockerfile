@@ -60,6 +60,7 @@ RUN yay -Sy --noconfirm &&\
     conda install -n multiqc numpy=1.26.4 -y &&\
     conda create -n star -c bioconda star -y &&\
     conda create -n htseq -c bioconda htseq -y &&\
+    conda create -n rmats rmats -y && \
     conda create -n bwtool -c pwwang -c bioconda bwtool -y &&\
     ln -s /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 &&\
     conda create -n scanpy -c conda-forge scanpy python-igraph leidenalg -y &&\
