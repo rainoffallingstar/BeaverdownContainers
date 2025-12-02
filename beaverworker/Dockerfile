@@ -10,9 +10,6 @@ RUN pacman -Sy --noconfirm && \
         wget \
         mariadb \
         mariadb-clients \
-        samtools \
-        htslib \
-        bedtools \
         imagemagick \
         poppler \
         libxtst \
@@ -34,7 +31,18 @@ RUN set -ex && \
     done && \
     sudo -u builduser yay -Sc --noconfirm
 
-# 批次 2: 生信分析工具
+# 批次 2: 核心生信库(htslib, samtools, bedtools)
+RUN set -ex && \
+    for i in {1..3}; do \
+        sudo -u builduser yay -S --noconfirm --needed \
+            samtools \
+            htslib \
+            bedtools && \
+        break || sleep 10; \
+    done && \
+    sudo -u builduser yay -Sc --noconfirm
+
+# 批次 3: 质控和处理工具
 RUN set -ex && \
     for i in {1..3}; do \
         sudo -u builduser yay -S --noconfirm --needed \
@@ -47,7 +55,7 @@ RUN set -ex && \
     done && \
     sudo -u builduser yay -Sc --noconfirm
 
-# 批次 3: 比对工具
+# 批次 4: 比对工具
 RUN set -ex && \
     for i in {1..3}; do \
         sudo -u builduser yay -S --noconfirm --needed \
