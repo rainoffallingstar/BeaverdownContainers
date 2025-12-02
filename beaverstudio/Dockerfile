@@ -17,7 +17,7 @@ RUN tar hzxf /tmp/s6-overlay-x86.tar.gz  -C / --exclude=usr/bin/execlineb &&\
     tar hzxf /tmp/s6-overlay-x86.tar.gz  -C /usr ./bin/execlineb &&\
     echo "$S6_VERSION" >/rocker_scripts/.s6_version &&\
     rm -rf /tmp/s6-overlay-x86.tar.gz  &&\
-    yay -S --noconfirm rstudio-server-bin &&\
+    sudo -u builduser yay -S --noconfirm rstudio-server-bin &&\
     R -e "print(list.files('rocker_scripts'))" &&\
     R -e "print(list.files('etc/rstudio'))" &&\
     mkdir /etc/rstudio/fonts
@@ -46,7 +46,7 @@ RUN DEFAULT_USER=${DEFAULT_USER:-"builduser"} &&\
     echo "[*]" > /etc/rstudio/logging.conf &&\
     echo "log-level=warn" >> /etc/rstudio/logging.conf &&\
     echo "logger-type=syslog" >> /etc/rstudio/logging.conf &&\
-    yay -Sc --noconfirm &&\
+    sudo -u builduser yay -Sc --noconfirm &&\
     cp /rocker_scripts/init_set_env.sh /etc/cont-init.d/01_set_env &&\
     cp /rocker_scripts/init_userconf.sh /etc/cont-init.d/02_userconf &&\
     cp /rocker_scripts/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper &&\
