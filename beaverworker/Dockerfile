@@ -159,7 +159,7 @@ RUN set -ex && \
     # 批量安装核心包
     R -e "pak::pkg_install(c( \
         'DT', 'shinyWidgets', 'shiny', 'bslib', 'optparse', 'openxlsx', \
-        'NOISeq', 'XML', 'Repitools', 'Rsamtools', 'rtracklayer', 'R6', \
+        'NOISeq', 'XML', 'Rsamtools', 'rtracklayer', 'R6', \
         'reticulate', 'GSVA', 'graphite', 'igraph', 'ggraph', 'TCGAbiolinks', \
         'SummarizedExperiment', 'doParallel', 'yaml', 'tinytex', 'KEGGgraph', \
         'plotly', 'pROC', 'sva', 'glue', 'fs', 'png', 'reshape2', 'readxl', \
