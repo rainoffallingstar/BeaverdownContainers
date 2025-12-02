@@ -1,59 +1,50 @@
-FROM archlinux
-# Use parallel compression
+FROM archlinux:latest
+
+# 配置并行编译
 COPY makepkg.conf /etc/makepkg.conf
-COPY install_yay.sh /usr/bin/install_yay.sh
-## CREATE A NORMAL USER FOR YAY
-# Delete the buildusers password
-# Allow the builduser passwordless sudo
-RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
-    pacman -Sy --noconfirm --debug archlinux-keyring manjaro-keyring &&\
-    rm -fr /etc/pacman.d/gnupg &&\
-    pacman-key --init &&\
-    pacman-key --populate archlinux manjaro &&\
-    pacman -Sc --noconfirm &&\
-    pacman -Syu --noconfirm && pacman -Sc --noconfirm &&\
-    pacman -S --needed \
-    base-devel \
-    binutils \
-    fakeroot \
-    gawk \
-    gettext \
-    gcc \
-    git \
-    make \
-    nano \
-    pigz \
-    pbzip2 \
-    openssh \
-    sudo \
-    which \
-    gcc-fortran \
-    cmake \
-    fastfetch \
-    --noconfirm && pacman -Sc --noconfirm &&\
-    useradd builduser -m &&\
-    passwd -d builduser &&\
-    printf 'root ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
-    printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
-    cd tmp &&\
-    git clone https://aur.archlinux.org/yay-bin.git &&\
-    cd .. &&\
-    chmod 777 /tmp/yay-bin/ &&\
-    chmod +x /usr/sbin/install_yay.sh &&\
-    sudo -u builduser install_yay.sh &&\
-    rm -rf /tmp/yay/ &&\
-    rm /usr/sbin/install_yay.sh &&\
-    sudo -u builduser yay -Sc --noconfirm &&\
-    mv /usr/bin/yay /usr/bin/yay-pure 
-COPY yay /usr/bin/yay
-COPY yay-install /usr/bin/yay-install
-RUN chmod a+x /usr/sbin/yay &&\
-    yay -Syu --noconfirm &&\
-    pacman -S python python-uv python-pip python-datrie  python-docutils  python-markupsafe python-jinja python-traitlets \
-    python-rpds-py python-referencing python-jsonschema-specifications \
-    python-jsonschema python-jupyter-core \
-    jupyter-nbformat python-psutil python-yaml --noconfirm &&\
-    pip install yte --break-system-packages &&\
-    pip install snakemake --break-system-packages &&\
-    yay -Sc --noconfirm
-CMD bash
+
+# 系统初始化
+RUN pacman-key --init && \
+    pacman-key --populate archlinux && \
+    pacman -Syu --noconfirm && \
+    pacman -Scc --noconfirm
+
+# 安装基础开发工具
+RUN pacman -S --needed --noconfirm \
+    base-devel git sudo nano openssh which \
+    pigz pbzip2 cmake gcc-fortran fastfetch && \
+    pacman -Scc --noconfirm
+
+# 创建构建用户(最小权限)
+RUN useradd -m builduser && \
+    echo 'builduser ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay' > /etc/sudoers.d/builduser && \
+    chmod 0440 /etc/sudoers.d/builduser
+
+# 安装 yay
+USER builduser
+WORKDIR /tmp
+RUN git clone --depth=1 https://aur.archlinux.org/yay-bin.git && \
+    cd yay-bin && makepkg -si --noconfirm && \
+    cd .. && rm -rf yay-bin
+WORKDIR /
+USER root
+
+# 安装 Python 和 pipx
+RUN pacman -S --noconfirm python python-pipx && \
+    pacman -Scc --noconfirm
+
+# 使用 pipx 安装科学计算工具
+RUN pipx install snakemake && \
+    pipx install yte && \
+    pipx ensurepath
+
+# 设置全局 PATH
+ENV PATH="/root/.local/bin:$PATH"
+
+# 清理(可选:移除 builduser)
+# RUN userdel -r builduser
+
+# 验证安装
+RUN snakemake --version && yay --version
+
+CMD ["/bin/bash"]
