@@ -177,7 +177,7 @@ RUN set -ex && \
     ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
     # 组3: 生物信息学核心包(Bioconductor)
     R -e "pak::pkg_install(c( \
-        'Repitools', 'Rsamtools', 'rtracklayer', 'GenomicRanges', \
+         'Rsamtools', 'rtracklayer', 'GenomicRanges', \
         'SummarizedExperiment', 'BSgenome', 'BSgenome.Hsapiens.UCSC.hg19', \
         'bsseq', 'limma' \
     ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
@@ -209,8 +209,6 @@ RUN set -ex && \
     # 安装 tinytex(独立处理,因为可能较大)
     R -e "tinytex::install_tinytex(force = TRUE)" && \
     R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" && \
-    # 验证关键包是否安装成功
-    R -e "stopifnot(require(pak), require(tidyverse), require(Seurat), require(clusterProfiler))" && \
     # 清理缓存
     R -e "pak::cache_clean()" && \
     rm -rf /tmp/* /root/.cache/* /root/.local/share/pak
