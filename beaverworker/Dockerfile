@@ -140,7 +140,7 @@ RUN set -ex && \
     mamba create -n star star -y && \
     mamba create -n htseq htseq -y && \
     mamba create -n rmats rmats -y && \
-    mamba create -n bwtool bwtool -y && \
+    mamba create -n bwtool -c pwwang -c bioconda bwtool -y && \
     ln -sf /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.1 \
            /opt/miniconda3/envs/bwtool/lib/libcrypto.so.1.0.0 && \
     mamba create -n scanpy scanpy python-igraph leidenalg -y && \
