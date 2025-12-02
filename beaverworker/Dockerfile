@@ -122,9 +122,13 @@ RUN set -ex && \
     . /opt/miniconda3/etc/profile.d/conda.sh && \
     conda activate && \
     export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1 && \
+    # 接受 Anaconda TOS
+    conda config --set channel_priority strict && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 配置频道
     conda config --add channels bioconda && \
     conda config --add channels conda-forge && \
-    conda config --set channel_priority strict && \
     # 安装 mamba 加速
     conda install -n base mamba -y && \
     # 创建各个环境
