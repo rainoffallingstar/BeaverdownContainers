@@ -5,7 +5,8 @@ COPY install_yay.sh /usr/bin/install_yay.sh
 ## CREATE A NORMAL USER FOR YAY
 # Delete the buildusers password
 # Allow the builduser passwordless sudo
-RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
+RUN  cd /usr/lib/ && ln -s libgpgme.so libgpgme.so.11 && cd .. && cd .. &&\
+    pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     pacman -Sy --noconfirm --debug archlinux-keyring manjaro-keyring &&\
     rm -fr /etc/pacman.d/gnupg &&\
     pacman-key --init &&\
@@ -35,7 +36,6 @@ RUN pacman -Sy --noconfirm --debug gawk gnupg libgpg-error gnupg gpgme &&\
     passwd -d builduser &&\
     printf 'root ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
     printf 'builduser ALL=(ALL) ALL\n' | tee -a /etc/sudoers &&\
-    cd /usr/lib/ && ln -s libgpgme.so libgpgme.so.11 && cd .. && cd .. &&\
     cd tmp &&\
     git clone https://aur.archlinux.org/yay-bin.git &&\
     cd .. &&\
