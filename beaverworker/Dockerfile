@@ -148,71 +148,112 @@ RUN set -ex && \
     conda clean --all -y && \
     rm -rf /opt/miniconda3/pkgs/*
 
-# ===== 阶段 7: R 包安装(增强兼容性版本) =====
+# ===== 阶段 7: R 包安装(增强兼容性和容错) =====
 RUN set -ex && \
-    # 配置全局 CRAN 镜像(写入配置文件)
+    # 安装系统依赖
+    pacman -S --needed --noconfirm cairo pango freetype2 libpng libjpeg-turbo libtiff harfbuzz fribidi && \
+    # 配置全局 R 环境
     mkdir -p /root/.R && \
-    echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
-    echo "options(download.file.method = 'libcurl')" >> /root/.Rprofile && \
-    echo "options(timeout = 600)" >> /root/.Rprofile && \
-    # 安装 pak 包管理器(带重试)
-    R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/', Ncpus = parallel::detectCores())" || \
-    R -e "install.packages('pak', repos = 'https://cloud.r-project.org/', Ncpus = parallel::detectCores())" && \
-    # 配置 pak 使用清华镜像
-    R -e "pak::repo_add(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
-    # 安装图形库依赖(带系统依赖检查)
-    pacman -S --needed --noconfirm cairo pango freetype2 libpng libjpeg-turbo libtiff && \
-    R -e "pak::pak('r-lib/ragg', ask = FALSE)" && \
-    # 批量安装核心包(分组安装,增加容错)
-    # 组1: 基础 Shiny 和数据处理包
-    R -e "pak::pkg_install(c( \
-        'DT', 'shinyWidgets', 'shiny', 'bslib', 'optparse', 'openxlsx', \
-        'XML', 'R6', 'yaml', 'glue', 'fs', 'png', 'reshape2', 'readxl', \
-        'RColorBrewer', 'rjson', 'data.table', 'dbplyr' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 组2: 统计和可视化包
-    R -e "pak::pkg_install(c( \
-        'plotly', 'pROC', 'sva', 'sampling', 'pdftools', 'umap', \
-        'gridExtra', 'ggpubr', 'tidyverse' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 组3: 生物信息学核心包(Bioconductor)
-    R -e "pak::pkg_install(c( \
-         'Rsamtools', 'rtracklayer', 'GenomicRanges', \
-        'SummarizedExperiment', 'BSgenome', 'BSgenome.Hsapiens.UCSC.hg19', \
-        'bsseq', 'limma' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 组4: 富集分析和通路包
-    R -e "pak::pkg_install(c( \
-        'clusterProfiler', 'org.Hs.eg.db', 'msigdbr', 'KEGGREST', \
-        'GSVA', 'graphite', 'igraph', 'ggraph', 'KEGGgraph' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 组5: 高级分析包
-    R -e "pak::pkg_install(c( \
-        'NOISeq', 'reticulate', 'TCGAbiolinks', 'GenomicDataCommons', \
-        'doParallel', 'foreach', 'doMC', 'Seurat', 'xlsx' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 组6: 机器学习包
-    R -e "pak::pkg_install(c( \
-        'mlr3verse' \
-    ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
-    # 安装 mlr3 扩展(单独处理,因为可能需要额外依赖)
-    R -e "pak::pkg_install('mlr-org/mlr3extralearners@*release', \
-        upgrade = TRUE, ask = FALSE, dependencies = NA)" || true && \
-    # 安装开发工具
-    R -e "pak::pak('devtools', ask = FALSE)" && \
-    # 安装 GitHub 包(单独处理每个,增加容错)
-    R -e "tryCatch(pak::pak('NKI-GCF/XenofilteR', ask = FALSE), error = function(e) message('XenofilteR installation failed'))" && \
-    R -e "tryCatch(pak::pak('CompEpigen/scMethrix', ask = FALSE), error = function(e) message('scMethrix installation failed'))" && \
-    R -e "tryCatch(pak::pak('CompEpigen/methrix', ask = FALSE), error = function(e) message('methrix installation failed'))" && \
-    R -e "tryCatch(pak::pak('blastula', ask = FALSE), error = function(e) message('blastula installation failed'))" && \
-    R -e "tryCatch(devtools::install_github('mlr-org/mlr3proba'), error = function(e) message('mlr3proba installation failed'))" && \
-    # 安装 tinytex(独立处理,因为可能较大)
-    R -e "tinytex::install_tinytex(force = TRUE)" && \
-    R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')" && \
-    # 清理缓存
+    cat > /root/.Rprofile << 'EOF'
+options(
+    repos = c(CRAN = "https://mirrors.tuna.tsinghua.edu.cn/CRAN/"),
+    download.file.method = "libcurl",
+    timeout = 600,
+    Ncpus = parallel::detectCores()
+)
+EOF
+    
+# 安装 pak(使用传统方式,避免元数据问题)
+RUN R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" || \
+    R -e "install.packages('pak', repos = 'https://cloud.r-project.org/')" && \
+    # 清理 pak 缓存并强制更新
     R -e "pak::cache_clean()" && \
-    rm -rf /tmp/* /root/.cache/* /root/.local/share/pak
+    R -e "pak::meta_clean()" && \
+    # 使用官方 CRAN 镜像作为 pak 的备用源
+    R -e "pak::repo_add(CRAN = 'https://cloud.r-project.org/')"
 
+# 组1: 基础包(使用传统 install.packages)
+RUN R -e "install.packages(c( \
+        'remotes', 'devtools', 'BiocManager', 'ragg', \
+        'DT', 'shiny', 'bslib', 'yaml', 'jsonlite' \
+    ), dependencies = TRUE, Ncpus = parallel::detectCores())"
+
+# 组2: 数据处理包(混合使用 BiocManager 和 install.packages)
+RUN R -e "install.packages(c( \
+        'tidyverse', 'data.table', 'openxlsx', 'readxl', 'reshape2', \
+        'R6', 'glue', 'fs', 'purrr', 'dplyr', 'ggplot2' \
+    ), dependencies = TRUE)" && \
+    R -e "BiocManager::install(c( \
+        'GenomicRanges', 'Biostrings', 'rtracklayer' \
+    ), update = FALSE, ask = FALSE)"
+
+# 组3: 可视化包
+RUN R -e "install.packages(c( \
+        'shinyWidgets', 'plotly', 'gridExtra', 'ggpubr', \
+        'RColorBrewer', 'scales', 'patchwork' \
+    ), dependencies = TRUE)"
+
+# 组4: 统计和机器学习
+RUN R -e "install.packages(c( \
+        'pROC', 'umap', 'sampling', 'foreach', 'doParallel', 'doMC' \
+    ), dependencies = TRUE)" && \
+    R -e "install.packages('mlr3verse', dependencies = TRUE)" || \
+    R -e "install.packages(c('mlr3', 'mlr3learners', 'mlr3pipelines'), dependencies = TRUE)"
+
+# 组5: Bioconductor 核心包
+RUN R -e "BiocManager::install(c( \
+        'limma', 'edgeR', 'DESeq2', \
+        'Rsamtools', 'GenomicAlignments', 'SummarizedExperiment', \
+        'BSgenome', 'BSgenome.Hsapiens.UCSC.hg19', 'bsseq', \
+        'Repitools' \
+    ), update = FALSE, ask = FALSE)"
+
+# 组6: 功能富集分析
+RUN R -e "BiocManager::install(c( \
+        'clusterProfiler', 'org.Hs.eg.db', 'DOSE', 'enrichplot', \
+        'msigdbr', 'KEGGREST', 'KEGGgraph', \
+        'GSVA', 'graphite', 'reactome.db' \
+    ), update = FALSE, ask = FALSE)"
+
+# 组7: 单细胞和高级分析
+RUN R -e "install.packages(c('Seurat', 'reticulate'), dependencies = TRUE)" && \
+    R -e "BiocManager::install(c( \
+        'SingleCellExperiment', 'scater', 'scran' \
+    ), update = FALSE, ask = FALSE)" || true
+
+# 组8: 基因组数据获取
+RUN R -e "BiocManager::install(c( \
+        'TCGAbiolinks', 'GenomicDataCommons', 'GEOquery' \
+    ), update = FALSE, ask = FALSE)" || true
+
+# 组9: 其他专用包
+RUN R -e "install.packages(c( \
+        'NOISeq', 'sva', 'XML', 'pdftools', 'optparse', \
+        'png', 'rjson', 'xlsx', 'dbplyr' \
+    ), dependencies = TRUE)" || true
+
+# 组10: GitHub 包(使用 remotes,更稳定)
+RUN R -e "remotes::install_github('r-lib/ragg', upgrade = 'never')" || true && \
+    R -e "remotes::install_github('NKI-GCF/XenofilteR', upgrade = 'never')" || true && \
+    R -e "remotes::install_github('CompEpigen/methrix', upgrade = 'never')" || true && \
+    R -e "remotes::install_github('CompEpigen/scMethrix', upgrade = 'never')" || true && \
+    R -e "remotes::install_github('mlr-org/mlr3proba', upgrade = 'never')" || true && \
+    R -e "remotes::install_github('mlr-org/mlr3extralearners', upgrade = 'never')" || true
+
+# 组11: 额外包
+RUN R -e "install.packages(c('blastula', 'tinytex'), dependencies = TRUE)" || true && \
+    R -e "tinytex::install_tinytex(force = TRUE)" && \
+    R -e "tinytex::tlmgr_repo('http://mirrors.tuna.tsinghua.edu.cn/CTAN/')"
+
+# 验证关键包
+RUN R -e "required_pkgs <- c('tidyverse', 'Seurat', 'clusterProfiler', 'limma', 'GenomicRanges'); \
+    missing <- required_pkgs[!sapply(required_pkgs, requireNamespace, quietly = TRUE)]; \
+    if(length(missing) > 0) stop('Missing packages: ', paste(missing, collapse=', '))" || true
+
+# 最终清理
+RUN R -e "pak::cache_clean()" || true && \
+    rm -rf /tmp/* /root/.cache/* /root/.local/share/pak /root/.local/share/rstudio
+    
 # ===== 阶段 8: 最终清理 =====
 RUN pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* \
