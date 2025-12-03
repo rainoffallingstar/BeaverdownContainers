@@ -1,7 +1,9 @@
 dockerR::image_build(name = "fallingstar10/beavermake:latest",
-                     "beavermake") 
+                     "beavermake")
 dockerR::image_build(name = "fallingstar10/beaverworker:latest",
-                     "beaverworker") 
+                     "beaverworker")
 dockerR::image_build(name = "fallingstar10/beaverstudio:latest",
                      "beaverstudio")
+dockerR::image_build(name = "fallingstar10/beaverjupyter:latest",
+                     "beaverjupyter")
 
