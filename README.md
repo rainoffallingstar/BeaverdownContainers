@@ -151,7 +151,7 @@ docker build -t fallingstar10/beaverjupyter:latest ./beaverjupyter
 - **`build_image.R`** - 一键构建所有容器镜像
 - **`pull_image.R`** - 一键拉取所有预构建镜像
 - **`beaverstudioUpdate.R`** - 更新 beaverstudio 容器（包含开发环境特定的卷挂载）
-- **`ADD_USER.R`** - 在容器中添加用户并配置 sudo 权限的辅助脚本 `<small>`(注意：这是 Shell 脚本，不是 R 脚本)`</small>`
+- **`ADD_USER.sh`** - 完整复制 fallingstar10 配置的用户管理脚本 `<small>`(包含用户创建、Sudo、SSH、RStudio 等完整配置)`</small>`
 
 ### ⚡ CI/CD 自动构建 `<small>`(CI/CD Auto Build)`</small>`
 

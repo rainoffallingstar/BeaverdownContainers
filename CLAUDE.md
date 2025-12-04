@@ -223,7 +223,7 @@ Workflows trigger on:
 - `build_image.R` - Primary container build script using dockerR
 - `pull_image.R` - Pull pre-built images from Docker Hub
 - `beaverstudioUpdate.R` - Development-specific beaverstudio setup (customize paths)
-- `ADD_USER.R` - Shell script for adding users to containers
+- `ADD_USER.sh` - Comprehensive user management script replicating fallingstar10 configuration
 
 #### CI/CD Configuration
 - `.github/workflows/beavermake.yml` - Friday 06:00 UTC builds
