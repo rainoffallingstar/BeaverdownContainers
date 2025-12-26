@@ -40,9 +40,12 @@ RUN mkdir -p /root/.R && \
 # 安装 micromamba（使用 yay）
 USER builduser
 WORKDIR /tmp
-RUN yay -S --noconfirm micromamba && yay -Scc --noconfirm
+RUN yay -S --noconfirm micromamba-bin && yay -Scc --noconfirm
 WORKDIR /
 USER root
+
+# 验证 micromamba 安装
+RUN micromamba --version
 
 # 安装 Rust
 RUN pacman -S --noconfirm rustup && \
@@ -58,6 +61,6 @@ RUN echo 'export PATH=/opt/micromamba/bin:$HOME/.cargo/bin:$HOME/go/bin:$PATH' >
 
 # 验证安装
 RUN python --version && R --version && node --version && npm --version && \
-    /opt/micromamba/bin/micromamba --version && rustc --version && cargo --version && go version
+    micromamba --version && rustc --version && cargo --version && go version
 
 CMD ["/bin/bash"]
