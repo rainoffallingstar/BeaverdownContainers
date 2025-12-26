@@ -10,7 +10,7 @@ RUN pacman-key --init && pacman-key --populate archlinux && \
 
 # 基础开发工具
 RUN pacman -S --needed --noconfirm \
-    base-devel git sudo nano openssh which \
+    base-devel git sudo nano openssh which wget curl \
     pigz pbzip2 cmake gcc-fortran fastfetch && \
     pacman -Scc --noconfirm
 
