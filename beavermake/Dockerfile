@@ -30,17 +30,23 @@ USER root
 
 # 安装 Python、R、Node.js、Go
 RUN pacman -S --noconfirm python python-pip r nodejs npm go && \
-    pacman -Scc --noconfirm
+    pacman -Sc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/* /tmp/* && \
+    rm -rf /root/.cache/* /root/.local/share/pip/cache/*
 
 # 安装 R pak 包管理器
 RUN mkdir -p /root/.R && \
     echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
-    R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')"
+    R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
+    rm -rf /tmp/Rtmp* /root/.R/pack/
 
 # 安装 micromamba（使用 yay）
 USER builduser
 WORKDIR /tmp
-RUN yay -S --noconfirm micromamba-bin && yay -Scc --noconfirm
+RUN yay -S --noconfirm micromamba-bin && \
+    yay -Sc --noconfirm && \
+    rm -rf /home/builduser/.cache/* /home/builduser/.cargo/registry/* /tmp/* && \
+    rm -rf /root/.cache/* /tmp/*
 WORKDIR /
 USER root
 
@@ -49,7 +55,9 @@ RUN micromamba --version
 
 # 安装 Rust
 RUN pacman -S --noconfirm rustup && \
-    rustup default stable
+    rustup default stable && \
+    pacman -Sc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/* /tmp/*
 
 # 配置环境变量
 ENV GOPATH=/root/go
