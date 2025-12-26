@@ -19,7 +19,7 @@ RUN pacman -Sy --noconfirm && \
 RUN pacman -S --noconfirm jupyterlab && pacman -Sc --noconfirm
 
 # ===== 阶段 2.5: 复制用户管理脚本 =====
-COPY add_user_interactive.sh /usr/local/bin/add-user
+COPY ../add_user_interactive.sh /usr/local/bin/add-user
 RUN chmod +x /usr/local/bin/add-user
 
 # ===== 阶段 3: R 包安装 =====
