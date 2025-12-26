@@ -37,10 +37,12 @@ RUN mkdir -p /root/.R && \
     echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
     R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')"
 
-# 安装 micromamba
-RUN wget -qO /tmp/micromamba.sh https://micro.mamba.pm/api/micromamba/linux-x86_64/latest && \
-    bash /tmp/micromamba.sh -b -p /opt/micromamba && \
-    rm /tmp/micromamba.sh
+# 安装 micromamba（使用 yay）
+USER builduser
+WORKDIR /tmp
+RUN yay -S --noconfirm micromamba && yay -Scc --noconfirm
+WORKDIR /
+USER root
 
 # 安装 Rust
 RUN pacman -S --noconfirm rustup && \
