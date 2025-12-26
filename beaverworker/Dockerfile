@@ -18,6 +18,10 @@ RUN pacman -Sy --noconfirm && \
 # ===== 阶段 2: JupyterLab 安装 =====
 RUN pacman -S --noconfirm jupyterlab && pacman -Sc --noconfirm
 
+# ===== 阶段 2.5: 复制用户管理脚本 =====
+COPY add_user_interactive.sh /usr/local/bin/add-user
+RUN chmod +x /usr/local/bin/add-user
+
 # ===== 阶段 3: R 包安装 =====
 # 配置 CRAN 镜像
 RUN mkdir -p /root/.R && \
@@ -145,20 +149,21 @@ echo "--- 启动 SSH 服务 ---"
 /usr/sbin/sshd -D &
 SSH_PID=$!
 
-echo "--- 启动 JupyterLab ---"
-su - fallingstar10 -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
-JUPYTER_PID=$!
-
-echo "--- 所有服务已启动 ---"
+echo "--- 服务已启动 ---"
 echo "SSH: ssh fallingstar10@localhost -p 2222 (密码: fallingstar10)"
-echo "JupyterLab: http://localhost:8889"
-echo "备用端口: 8080, 8787 (可用于其他服务)"
+echo ""
+echo "JupyterLab 需要手动启动，使用以下命令："
+echo "  su - fallingstar10 -c 'jupyter-lab --no-browser --allow-root --ip=* --port=8889 &'"
+echo ""
+echo "用户管理工具："
+echo "  add-user          # 交互式创建新用户"
+echo ""
 echo "Claude Code: claude-code (已全局安装)"
 echo "Rust 环境: 使用时需手动运行 source ~/.cargo/env"
 
-# 等待所有服务
-trap 'kill -9 $SSH_PID $JUPYTER_PID 2>/dev/null' TERM INT QUIT
-wait $SSH_PID $JUPYTER_PID
+# 等待 SSH 服务
+trap 'kill -9 $SSH_PID 2>/dev/null' TERM INT QUIT
+wait $SSH_PID
 EOF
 
 RUN chmod +x /usr/local/bin/start-services.sh

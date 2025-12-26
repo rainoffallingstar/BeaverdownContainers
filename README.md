@@ -61,10 +61,11 @@ graph TD
   - Bioconductor 核心包
   - GitHub 专用包
 - **集成功能**:
-  - 📓 **JupyterLab** - 交互式计算环境（端口 8889）
-  - 🔐 **SSH 访问** - 远程登录（端口 2222）
+  - 📓 **JupyterLab** - 已安装，需手动启动（端口 8889）
+  - 🔐 **SSH 访问** - 自动启动（端口 2222）
   - 👤 **fallingstar10 用户** - 默认登录账户（密码：fallingstar10）
   - 🤖 **Claude Code CLI** - 已全局安装
+  - 👥 **交互式用户管理** - `add-user` 命令创建新用户
 - **备用端口**: 8080, 8787（可用于 Shiny 等其他服务）
 
 ---
@@ -93,9 +94,34 @@ docker run -p 2222:2222 -p 8889:8889 -p 8080:8080 -p 8787:8787 \
 
 #### 3️⃣ 访问服务
 
-- **JupyterLab**: http://localhost:8889
-- **SSH**: `ssh fallingstar10@localhost -p 2222`（密码：fallingstar10）
-- **备用端口**: 8080, 8787（可用于其他服务）
+**SSH 访问**（自动启动）:
+```bash
+ssh fallingstar10@localhost -p 2222
+# 密码: fallingstar10
+```
+
+**启动 JupyterLab**（手动启动）:
+```bash
+# 方法 1: SSH 登录后启动
+docker exec -it beaverworker /bin/bash
+su - fallingstar10 -c 'jupyter-lab --no-browser --allow-root --ip=* --port=8889 &'
+
+# 方法 2: 直接启动
+docker exec beaverworker su - fallingstar10 -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+```
+
+然后访问: **http://localhost:8889**
+
+**创建新用户**:
+```bash
+# 进入容器
+docker exec -it beaverworker /bin/bash
+
+# 运行交互式用户管理脚本
+sudo add-user
+```
+
+脚本将引导您完成用户创建过程。
 
 ### 使用 R/dockerR 包
 
@@ -176,22 +202,32 @@ docker build -t fallingstar10/beaverworker:latest ./beaverworker
 
 #### 2. 📓 JupyterLab
 
+- **状态**: 已安装，需要手动启动
+- **启动命令**: `su - fallingstar10 -c 'jupyter-lab --no-browser --allow-root --ip=* --port=8889 &'`
 - **访问端口**: 8889
 - **语言支持**: Python, R, Bash
 - **扩展生态**: 可安装丰富的 JupyterLab 扩展
 
 #### 3. 🔐 SSH 访问
 
+- **状态**: 自动启动
 - **端口**: 2222
 - **默认用户**: fallingstar10（密码：fallingstar10）
 - **配置**: 支持 SSH 密钥认证
 
-#### 4. 🤖 Claude Code CLI
+#### 4. 👥 用户管理
+
+- **工具**: `add-user` 交互式脚本
+- **位置**: `/usr/local/bin/add-user`
+- **功能**: 创建新用户，配置 sudo、SSH、环境
+- **使用**: `sudo add-user`
+
+#### 5. 🤖 Claude Code CLI
 
 - **全局安装**: 可直接使用 `claude-code` 命令
 - **用途**: AI 辅助编程
 
-#### 5. 🌐 备用端口
+#### 6. 🌐 备用端口
 
 - **8080**: 可用于 Shiny 等 R Web 应用
 - **8787**: 预留给其他服务

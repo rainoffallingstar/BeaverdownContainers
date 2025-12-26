@@ -14,7 +14,7 @@ BeaverdownContainers is a **simplified** suite of Docker containers for the Beav
 ```
 beavermake (Arch Linux + Python + R + micromamba + yay + rustup + Node.js + npm + Go)
     ↓
-beaverworker (R packages + JupyterLab + SSH + Claude Code + fallingstar10 user)
+beaverworker (R packages + JupyterLab [manual] + SSH [auto] + Claude Code + fallingstar10 user + add-user tool)
 ```
 
 ---
@@ -85,14 +85,15 @@ export GOPATH=$HOME/go
 - **Group 6**: Machine learning (mlr3verse)
 
 **Services**:
-- **JupyterLab**: Port 8889
-- **SSH**: Port 2222
+- **JupyterLab**: Port 8889 (manual start required)
+- **SSH**: Port 2222 (auto-start)
 - **Reserved ports**: 8080, 8787 (available for other services)
 
 **User Management**:
 - **fallingstar10**: Default user (password: fallingstar10)
 - **Sudo access**: Full sudo privileges
 - **SSH access**: Configured with password and key authentication
+- **add-user tool**: Interactive script at `/usr/local/bin/add-user` for creating new users
 
 **Global Tools**:
 - **Claude Code CLI**: Installed globally via npm
@@ -113,9 +114,9 @@ NODE_PATH=/home/fallingstar10/.local/lib/node_modules:/root/.local/lib/node_modu
 
 **Startup Script**: `/usr/local/bin/start-services.sh`
 - Generates SSH host keys
-- Starts SSH daemon
-- Starts JupyterLab as fallingstar10 user
+- Starts SSH daemon (only auto-started service)
 - Displays connection information
+- **Note**: JupyterLab must be started manually
 
 ---
 
@@ -152,9 +153,31 @@ docker run -p 2222:2222 -p 8889:8889 -p 8080:8080 -p 8787:8787 \
 
 ### Accessing Services
 
-- **JupyterLab**: http://localhost:8889
-- **SSH**: `ssh fallingstar10@localhost -p 2222` (password: fallingstar10)
-- **Reserved ports**: 8080, 8787 (available for Shiny or other services)
+**SSH Access** (auto-started):
+```bash
+ssh fallingstar10@localhost -p 2222
+# Password: fallingstar10
+```
+
+**JupyterLab** (manual start):
+```bash
+# Start JupyterLab
+docker exec -it beaverworker /bin/bash
+su - fallingstar10 -c 'jupyter-lab --no-browser --allow-root --ip=* --port=8889 &'
+
+# Or start directly
+docker exec beaverworker su - fallingstar10 -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+```
+
+Then access: **http://localhost:8889**
+
+**User Management**:
+```bash
+# Create new user interactively
+docker exec -it beaverworker add-user
+```
+
+**Reserved ports**: 8080, 8787 (available for Shiny or other services)
 
 ---
 
@@ -282,6 +305,78 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 ## Common Development Tasks
 
+### Creating New Users
+
+**Using the interactive add-user tool**:
+
+```bash
+# Enter container
+docker exec -it beaverworker /bin/bash
+
+# Run the interactive user management script
+sudo add-user
+```
+
+The script will guide you through:
+1. Entering username
+2. Setting password (default: same as username)
+3. Selecting shell (/bin/bash, /bin/zsh, /bin/sh)
+4. Confirming configuration
+
+**What the script does**:
+- Creates user with home directory
+- Configures sudo access
+- Sets up SSH directory and authorized_keys
+- Configures environment variables in .bashrc
+- Validates configuration
+
+**Example output**:
+```
+╔═══════════════════════════════════════════════════════════╗
+║   Beaverworker User Management - Interactive Setup      ║
+╚═══════════════════════════════════════════════════════════╝
+
+Enter username: alice
+Set password for user 'alice': ******
+Confirm password: ******
+Select shell [1-3, default=1]: 1
+
+[STEP] Creating user: alice
+[SUCCESS] User 'alice' created successfully
+[SUCCESS] Sudo access configured for 'alice'
+[SUCCESS] SSH configuration completed
+[INFO] Add SSH public keys to: /home/alice/.ssh/authorized_keys
+
+═══════════════════════════════════════════════════════════
+           User Configuration Summary
+═══════════════════════════════════════════════════════════
+
+Username:     alice
+Home:         /home/alice
+Shell:        /bin/bash
+Sudo:         Enabled
+SSH:          Configured
+
+Access Information:
+  SSH:     ssh alice@localhost -p 2222
+```
+
+### Starting JupyterLab
+
+```bash
+# Method 1: From inside container
+docker exec -it beaverworker /bin/bash
+su - fallingstar10 -c 'jupyter-lab --no-browser --allow-root --ip=* --port=8889 &'
+
+# Method 2: Direct command
+docker exec beaverworker su - fallingstar10 -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+
+# Method 3: As a different user
+docker exec beaverworker su - alice -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+```
+
+Then access at: **http://localhost:8889**
+
 ### Installing Bioinformatics Tools
 
 ```bash
@@ -368,7 +463,8 @@ BeaverdownContainers/
 ├── pull_image.R            # R script to pull images
 ├── README.md               # User-facing documentation
 ├── CLAUDE.md               # This file
-└── ADD_USER.sh             # User management script
+├── ADD_USER.sh             # Legacy user management script
+└── add_user.sh             # Interactive user management tool (copied to beaverworker)
 ```
 
 ---
@@ -397,6 +493,12 @@ BeaverdownContainers/
 - **builduser**: Low-privilege user for AUR package installation
 - **fallingstar10**: Default login user in beaverworker with sudo privileges
 - **root**: System administration
+- **add-user tool**: Interactive script at `/usr/local/bin/add-user` for creating new users with:
+  - User creation with home directory
+  - Sudo access configuration
+  - SSH setup (directory, authorized_keys)
+  - Environment configuration (PATH, GOPATH, etc.)
+  - Configuration validation
 
 ### Environment Configuration
 
@@ -408,6 +510,23 @@ BeaverdownContainers/
 ---
 
 ## Important Notes
+
+### JupyterLab Manual Start
+
+**JupyterLab is NOT auto-started** in beaverworker to reduce resource usage. Users must manually start it:
+
+```bash
+# Start JupyterLab as fallingstar10
+docker exec beaverworker su - fallingstar10 -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+
+# Or as any other user
+docker exec beaverworker su - alice -c "jupyter-lab --no-browser --allow-root --ip=* --port=8889" &
+```
+
+This design choice:
+- **Reduces resource consumption**: JupyterLab is not running if not needed
+- **Allows multiple users**: Each user can start their own JupyterLab instance
+- **Flexibility**: Users can start JupyterLab on different ports if needed
 
 ### Rust Environment
 
