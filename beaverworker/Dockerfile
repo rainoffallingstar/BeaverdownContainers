@@ -17,16 +17,16 @@ RUN pacman -Sy --noconfirm && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
-# ===== 阶段 2: JupyterLab 安装 =====
+# ===== 阶段段 2: JupyterLab 安装 =====
 RUN pacman -S --noconfirm jupyterlab && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
 # ===== 阶段 2.5: 复制用户管理脚本 =====
 COPY add_user_interactive.sh /usr/local/bin/add-user
-RUN chmod +x /usr/local/bin/add-user
+RUN chmod +x /usr/local/bin/add-user && rm -rf /tmp/*
 
-# ===== 阶段 3: R 包安装 =====
+# ===== 阶段 3: 简化的 R 包安装 =====
 # 配置 CRAN 镜像
 RUN mkdir -p /root/.R && \
     echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
@@ -43,7 +43,7 @@ RUN pacman -S --needed --noconfirm \
     rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
     R -e "pak::cache_clean()"
 
-# 批量安装 R 包
+# ===== 简化的 R 包：只保留组1、2、6 =====
 # 组1: Shiny 和数据处理包
 RUN R -e "pak::pkg_install(c( \
     'DT', 'shinyWidgets', 'shiny', 'bslib', 'optparse', 'openxlsx', \
@@ -61,54 +61,27 @@ RUN R -e "pak::pkg_install(c( \
     rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
     R -e "pak::cache_clean()"
 
-# 组3: 生物信息学核心包
-RUN R -e "pak::pkg_install(c( \
-    'Rsamtools', 'rtracklayer', 'GenomicRanges', \
-    'SummarizedExperiment', 'BSgenome', 'BSgenome.Hsapiens.UCSC.hg19', \
-    'bsseq', 'limma' \
-), upgrade = TRUE, ask = FALSE, dependencies = NA)"
-
-# 组4: 富集分析和通路包
-RUN R -e "pak::pkg_install(c( \
-    'clusterProfiler', 'org.Hs.eg.db', 'msigdbr', 'KEGGREST', \
-    'GSVA', 'graphite', 'igraph', 'ggraph', 'KEGGgraph' \
-), upgrade = TRUE, ask = FALSE, dependencies = NA)"
-
-# 组5: 高级分析包
-RUN R -e "pak::pkg_install(c( \
-    'NOISeq', 'reticulate', 'TCGAbiolinks', 'GenomicDataCommons', \
-    'doParallel', 'foreach', 'doMC', 'Seurat', 'xlsx' \
-), upgrade = TRUE, ask = FALSE, dependencies = NA)"
-
 # 组6: 机器学习包
 RUN R -e "pak::pkg_install(c( \
     'mlr3verse' \
-), upgrade = TRUE, ask = FALSE, dependencies = NA)"
-
-# 安装 GitHub 包（带容错）
-RUN R -e "tryCatch(pak::pak('NKI-GCF/XenofilteR', ask = FALSE), error = function(e) message('XenofilteR installation failed'))" && \
-    R -e "tryCatch(pak::pak('CompEpigen/scMethrix', ask = FALSE), error = function(e) message('scMethrix installation failed'))" && \
-    R -e "tryCatch(pak::pak('CompEpigen/methrix', ask = FALSE), error = function(e) message('methrix installation failed'))"
-
-# 安装开发工具
-RUN R -e "pak::pak('devtools', ask = FALSE)"
-
-# 清理缓存
-RUN R -e "pak::cache_clean()" && \
-    rm -rf /tmp/* /root/.cache/* /root/.local/share/pak
+), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
+    rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
+    R -e "pak::cache_clean()"
 
 # ===== 阶段 4: 创建 fallingstar10 用户 =====
 RUN useradd -m -s /bin/bash fallingstar10 && \
     echo "fallingstar10:fallingstar10" | chpasswd && \
-    echo "fallingstar10 ALL=(ALL) ALL" >> /etc/sudoers
+    echo "fallingstar10 ALL=(ALL) ALL" >> /etc/sudoers && \
+    rm -rf /tmp/*
 
 # ===== 阶段 5: SSH 配置 =====
 RUN mkdir -p /var/run/sshd && \
     mkdir -p /home/fallingstar10/.ssh && \
     chown -R fallingstar10:fallingstar10 /home/fallingstar10/.ssh && \
-    chmod 700 /home/fallingstar10/.ssh
+    chmod 700 /home/fallingstar10/.ssh && \
+    rm -rf /tmp/*
 
-RUN cat > /etc/ssh/sshd_config <<'EOF'
+RUN cat > /etc/ssh/sshd_config <<'EOF' && rm -rf /tmp/*
 Port 2222
 Protocol 2
 PermitRootLogin no
@@ -117,7 +90,7 @@ PubkeyAuthentication yes
 Subsystem sftp /usr/lib/openssh/sftp-server
 EOF
 
-RUN cat > /home/fallingstar10/.ssh/authorized_keys <<'EOF'
+RUN cat > /home/fallingstar10/.ssh/authorized_keys <<'EOF' && rm -rf /tmp/*
 # Add your SSH public keys here
 # Format: ssh-rsa AAAAB3NzaC1yc2E... yourname@yourhost
 EOF
@@ -126,7 +99,8 @@ RUN chown fallingstar10:fallingstar10 /home/fallingstar10/.ssh/authorized_keys &
 
 # ===== 阶段 6: 全局安装 Claude Code =====
 RUN npm install -g @anthropic-ai/claude-code && \
-    npm cache clean --force
+    npm cache clean --force && \
+    rm -rf /tmp/* /root/.npm /root/.node_modules
 
 # ===== 阶段 7: 环境变量配置 =====
 ENV PATH=/opt/micromamba/bin:/home/fallingstar10/.cargo/bin:/home/fallingstar10/.local/bin:/home/fallingstar10/go/bin:/root/.cargo/bin:/root/.local/bin:/root/go/bin:$PATH \
@@ -141,16 +115,18 @@ ENV PATH=/opt/micromamba/bin:/home/fallingstar10/.cargo/bin:/home/fallingstar10/
 # root 配置
 RUN echo "export PATH=/opt/micromamba/bin:\$HOME/.cargo/bin:\$HOME/.local/bin:\$HOME/go/bin:\$PATH" >> /root/.bashrc && \
     echo "export GOPATH=\$HOME/go" >> /root/.bashrc && \
-    echo "source /opt/micromamba/etc/profile.d/micromamba.sh" >> /root/.bashrc
+    echo "source /opt/micromamba/etc/profile.d/micromamba.sh" >> /root/.bashrc && \
+    rm -rf /tmp/*
 
 # fallingstar10 配置（不自动初始化 Rust）
 RUN echo "export PATH=/opt/micromamba/bin:\$HOME/.cargo/bin:\$HOME/.local/bin:\$HOME/go/bin:\$PATH" >> /home/fallingstar10/.bashrc && \
     echo "export GOPATH=\$HOME/go" >> /home/fallingstar10/.bashrc && \
     echo "source /opt/micromamba/etc/profile.d/micromamba.sh" >> /home/fallingstar10/.bashrc && \
-    chown fallingstar10:fallingstar10 /home/fallingstar10/.bashrc
+    chown fallingstar10:fallingstar10 /home/fallingstar10/.bashrc && \
+    rm -rf /tmp/*
 
 # ===== 阶段 8: 启动脚本 =====
-RUN cat > /usr/local/bin/start-services.sh <<'EOF'
+RUN cat > /usr/local/bin/start-services.sh <<'EOF' && rm -rf /tmp/*
 #!/bin/env bash
 set -e
 
@@ -182,7 +158,17 @@ EOF
 
 RUN chmod +x /usr/local/bin/start-services.sh
 
-# ===== 阶段 9: 端口暴露 =====
+# ===== 阶段 9: 全局清理 =====
+RUN pacman -Sc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/* \
+           /home/builduser/.cache/* \
+           /home/builduser/.cargo/registry/* \
+           /tmp/* \
+           /root/.cache/* \
+           /root/.local/share/pak/* \
+           /root/.local/share/pip/cache/*
+
+# ===== 阶段 10: 环境暴露 =====
 EXPOSE 2222 8889 8080 8787
 
 # ===== 容器入口 =====
