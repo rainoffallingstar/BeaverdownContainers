@@ -45,10 +45,12 @@ USER builduser
 WORKDIR /tmp
 RUN yay -S --noconfirm micromamba-bin && \
     yay -Sc --noconfirm && \
-    rm -rf /home/builduser/.cache/* /home/builduser/.cargo/registry/* /tmp/* && \
-    rm -rf /root/.cache/* /tmp/*
+    rm -rf /home/builduser/.cache/* /home/builduser/.cargo/registry/* /tmp/*
 WORKDIR /
 USER root
+
+# 清理 root 缓存（作为 root 执行）
+RUN rm -rf /root/.cache/* /tmp/*
 
 # 验证 micromamba 安装
 RUN micromamba --version
