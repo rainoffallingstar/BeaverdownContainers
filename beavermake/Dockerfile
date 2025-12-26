@@ -1,21 +1,20 @@
 FROM archlinux:latest
 
-# 配置并行编译
+# 并行编译配置
 COPY makepkg.conf /etc/makepkg.conf
 
 # 系统初始化
-RUN pacman-key --init && \
-    pacman-key --populate archlinux && \
+RUN pacman-key --init && pacman-key --populate archlinux && \
     pacman -Syu --noconfirm && \
     pacman -Scc --noconfirm
 
-# 安装基础开发工具
+# 基础开发工具
 RUN pacman -S --needed --noconfirm \
     base-devel git sudo nano openssh which \
     pigz pbzip2 cmake gcc-fortran fastfetch && \
     pacman -Scc --noconfirm
 
-# 创建构建用户(最小权限)
+# 创建 builduser
 RUN useradd -m builduser && \
     echo 'builduser ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay' > /etc/sudoers.d/builduser && \
     chmod 0440 /etc/sudoers.d/builduser
@@ -29,22 +28,34 @@ RUN git clone --depth=1 https://aur.archlinux.org/yay-bin.git && \
 WORKDIR /
 USER root
 
-# 安装 Python 和 pipx
-RUN pacman -S --noconfirm python python-pipx && \
+# 安装 Python、R、Node.js、Go
+RUN pacman -S --noconfirm python python-pip r nodejs npm go && \
     pacman -Scc --noconfirm
 
-# 使用 pipx 安装科学计算工具
-RUN pipx install snakemake && \
-    pipx install yte && \
-    pipx ensurepath
+# 安装 R pak 包管理器
+RUN mkdir -p /root/.R && \
+    echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
+    R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')"
 
-# 设置全局 PATH
-ENV PATH="/root/.local/bin:$PATH"
+# 安装 micromamba
+RUN wget -qO /tmp/micromamba.sh https://micro.mamba.pm/api/micromamba/linux-x86_64/latest && \
+    bash /tmp/micromamba.sh -b -p /opt/micromamba && \
+    rm /tmp/micromamba.sh
 
-# 清理(可选:移除 builduser)
-# RUN userdel -r builduser
+# 安装 Rust
+RUN pacman -S --noconfirm rustup && \
+    rustup default stable
+
+# 配置环境变量
+ENV GOPATH=/root/go
+ENV PATH=/opt/micromamba/bin:/root/.cargo/bin:/root/.local/bin:/root/go/bin:$PATH
+
+# 为 builduser 配置环境
+RUN echo 'export PATH=/opt/micromamba/bin:$HOME/.cargo/bin:$HOME/go/bin:$PATH' >> /home/builduser/.bashrc && \
+    echo 'export GOPATH=$HOME/go' >> /home/builduser/.bashrc
 
 # 验证安装
-RUN snakemake --version && yay --version
+RUN python --version && R --version && node --version && npm --version && \
+    /opt/micromamba/bin/micromamba --version && rustc --version && cargo --version && go version
 
 CMD ["/bin/bash"]
