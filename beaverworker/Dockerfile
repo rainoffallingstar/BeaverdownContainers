@@ -12,7 +12,8 @@ RUN pacman -Sy --noconfirm && \
         imagemagick \
         poppler \
         libxtst \
-        openssh && \
+        openssh \
+        jdk-openjdk && \
     pacman -Sc --noconfirm
 
 # ===== 阶段 2: JupyterLab 安装 =====
