@@ -17,12 +17,25 @@ RUN pacman -Sy --noconfirm && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
-# ===== 阶段段 2: JupyterLab 安装 =====
+# ===== 阶段 2: JupyterLab 安装 =====
 RUN pacman -S --noconfirm jupyterlab && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
-# ===== 阶段 2.5: 复制用户管理脚本 =====
+# ===== 阶段 2.5: 安装 Ark (Posit Dev) =====
+RUN cd /tmp && \
+    wget -q https://github.com/posit-dev/ark/releases/download/0.1.222/ark-0.1.222-linux-x64.zip && \
+    unzip -q ark-0.1.222-linux-x64.zip && \
+    mv ark /usr/bin/ && \
+    chmod +x /usr/bin/ark && \
+    ark --install && \
+    rm -rf /tmp/ark*
+
+# ===== 阶段 2.6: 安装 Air (Posit Dev) =====
+RUN curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh && \
+    rm -rf /tmp/*
+
+# ===== 阶段 2.7: 复制用户管理脚本 =====
 COPY add_user_interactive.sh /usr/local/bin/add-user
 RUN chmod +x /usr/local/bin/add-user && rm -rf /tmp/*
 
@@ -64,6 +77,14 @@ RUN R -e "pak::pkg_install(c( \
 # 组6: 机器学习包
 RUN R -e "pak::pkg_install(c( \
     'mlr3verse' \
+), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
+    rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
+    R -e "pak::cache_clean()"
+
+# 组7: R 语言服务器和代码质量工具
+RUN R -e "pak::pkg_install(c( \
+    'languageserver', \
+    'lintr' \
 ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
     rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
     R -e "pak::cache_clean()"
