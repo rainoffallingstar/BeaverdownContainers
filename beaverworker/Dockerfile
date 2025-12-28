@@ -130,7 +130,8 @@ ENV PATH=/opt/micromamba/bin:/home/fallingstar10/.cargo/bin:/home/fallingstar10/
     JAVA_OPTS="-Djava.awt.headless=true" \
     R_PROGRESSR_ENABLE=TRUE \
     LANG=C.UTF-8 \
-    NODE_PATH=/home/fallingstar10/.local/lib/node_modules:/root/.local/lib/node_modules
+    NODE_PATH=/home/fallingstar10/.local/lib/node_modules:/root/.local/lib/node_modules \
+    FACTORY_API_KEY=fk-uapnTYzc3bZ0zc5hWNmH-GebxIzVDVnbHQ8NGGEFuxoDNBmWYS2MxEkI5tgl3123
 
 # Bash 配置
 # root 配置
