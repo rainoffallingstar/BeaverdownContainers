@@ -262,6 +262,17 @@ EOF
 
     chown "$username:$username" "$bashrc"
     log_success "User environment configured"
+
+    # R: ensure user library path is available (avoid permission errors on install.packages)
+    mkdir -p "/home/$username/.local/share/R"
+    chown -R "$username:$username" "/home/$username/.local"
+
+    local renviron="/home/$username/.Renviron"
+    touch "$renviron"
+    if ! grep -q '^R_LIBS_USER=' "$renviron"; then
+        echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> "$renviron"
+    fi
+    chown "$username:$username" "$renviron"
 }
 
 # Validate configuration

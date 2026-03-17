@@ -39,6 +39,15 @@ RUN curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-ins
 COPY add_user_interactive.sh /usr/local/bin/add-user
 RUN chmod +x /usr/local/bin/add-user && rm -rf /tmp/*
 
+# ===== R：默认安装到用户目录，避免无权限写系统库 =====
+RUN RHOME="$(R RHOME)" && \
+    mkdir -p /etc/R "$RHOME/etc" && \
+    touch /etc/R/Renviron.site "$RHOME/etc/Renviron.site" && \
+    grep -q '^R_LIBS_USER=' /etc/R/Renviron.site || \
+      echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> /etc/R/Renviron.site && \
+    grep -q '^R_LIBS_USER=' "$RHOME/etc/Renviron.site" || \
+      echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> "$RHOME/etc/Renviron.site"
+
 # ===== 阶段 3: 简化的 R 包安装 =====
 # 配置 CRAN 镜像
 RUN mkdir -p /root/.R && \
@@ -52,13 +61,13 @@ RUN pacman -S --needed --noconfirm \
     cairo pango freetype2 libpng libjpeg-turbo libtiff && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/* && \
-    R -e "pak::pak('r-lib/ragg', ask = FALSE)" && \
+    R_LIBS_USER= R -e "pak::pak('r-lib/ragg', ask = FALSE)" && \
     rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
     R -e "pak::cache_clean()"
 
 # ===== 简化的 R 包：只保留组1、2、6 =====
 # 组1: Shiny 和数据处理包
-RUN R -e "pak::pkg_install(c( \
+RUN R_LIBS_USER= R -e "pak::pkg_install(c( \
     'DT', 'shinyWidgets', 'shiny', 'bslib', 'optparse', 'openxlsx', \
     'XML', 'R6', 'yaml', 'glue', 'fs', 'png', 'reshape2', 'readxl', \
     'RColorBrewer', 'rjson', 'data.table', 'dbplyr' \
@@ -67,7 +76,7 @@ RUN R -e "pak::pkg_install(c( \
     R -e "pak::cache_clean()"
 
 # 组2: 统计和可视化包
-RUN R -e "pak::pkg_install(c( \
+RUN R_LIBS_USER= R -e "pak::pkg_install(c( \
     'plotly', 'pROC', 'sva', 'sampling', 'pdftools', 'umap', \
     'gridExtra', 'ggpubr', 'tidyverse' \
 ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
@@ -75,14 +84,14 @@ RUN R -e "pak::pkg_install(c( \
     R -e "pak::cache_clean()"
 
 # 组6: 机器学习包
-RUN R -e "pak::pkg_install(c( \
+RUN R_LIBS_USER= R -e "pak::pkg_install(c( \
     'mlr3verse' \
 ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
     rm -rf /tmp/Rtmp* /tmp/* /root/.cache/pak/* && \
     R -e "pak::cache_clean()"
 
 # 组7: R 语言服务器和代码质量工具
-RUN R -e "pak::pkg_install(c( \
+RUN R_LIBS_USER= R -e "pak::pkg_install(c( \
     'languageserver', \
     'lintr' \
 ), upgrade = TRUE, ask = FALSE, dependencies = NA)" && \
@@ -93,6 +102,8 @@ RUN R -e "pak::pkg_install(c( \
 RUN useradd -m -s /bin/bash fallingstar10 && \
     echo "fallingstar10:fallingstar10" | chpasswd && \
     echo "fallingstar10 ALL=(ALL) ALL" >> /etc/sudoers && \
+    mkdir -p /home/fallingstar10/.local/share/R && \
+    chown -R fallingstar10:fallingstar10 /home/fallingstar10/.local && \
     rm -rf /tmp/*
 
 # ===== 阶段 5: SSH 配置 =====
@@ -108,7 +119,7 @@ Protocol 2
 PermitRootLogin no
 PasswordAuthentication yes
 PubkeyAuthentication yes
-Subsystem sftp /usr/lib/openssh/sftp-server
+Subsystem sftp internal-sftp
 EOF
 
 RUN cat > /home/fallingstar10/.ssh/authorized_keys <<'EOF' && rm -rf /tmp/*
@@ -118,10 +129,15 @@ EOF
 RUN chown fallingstar10:fallingstar10 /home/fallingstar10/.ssh/authorized_keys && \
     chmod 600 /home/fallingstar10/.ssh/authorized_keys
 
-# ===== 阶段 6: 全局安装 Claude Code =====
-RUN npm install -g @anthropic-ai/claude-code && \
+# ===== 阶段 6: 全局安装 Codex/Claude Code/uv =====
+RUN npm install -g @openai/codex @anthropic-ai/claude-code && \
     npm cache clean --force && \
     rm -rf /tmp/* /root/.npm /root/.node_modules
+
+# uv（Python 包管理/环境工具）
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL="/usr/local/bin" sh && \
+    uv --version && \
+    rm -rf /tmp/* /root/.cache/*
 
 # ===== 阶段 7: 环境变量配置 =====
 ENV PATH=/opt/micromamba/bin:/home/fallingstar10/.cargo/bin:/home/fallingstar10/.local/bin:/home/fallingstar10/go/bin:/root/.cargo/bin:/root/.local/bin:/root/go/bin:$PATH \

@@ -37,8 +37,17 @@ RUN pacman -S --noconfirm python python-pip r nodejs npm go && \
 # 安装 R pak 包管理器
 RUN mkdir -p /root/.R && \
     echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
-    R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
+    R_LIBS_USER= R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
     rm -rf /tmp/Rtmp* /root/.R/pack/
+
+# 配置 R：默认安装到用户目录，避免无权限写系统库
+RUN RHOME="$(R RHOME)" && \
+    mkdir -p /etc/R "$RHOME/etc" && \
+    touch /etc/R/Renviron.site "$RHOME/etc/Renviron.site" && \
+    grep -q '^R_LIBS_USER=' /etc/R/Renviron.site || \
+      echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> /etc/R/Renviron.site && \
+    grep -q '^R_LIBS_USER=' "$RHOME/etc/Renviron.site" || \
+      echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> "$RHOME/etc/Renviron.site"
 
 # 安装 micromamba（使用 yay）
 USER builduser
