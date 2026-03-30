@@ -64,18 +64,20 @@ RUN RHOME="$(R RHOME)" && \
     grep -q '^R_LIBS_USER=' "$RHOME/etc/Renviron.site" || \
       echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> "$RHOME/etc/Renviron.site"
 
-# 安装 micromamba（使用 yay）
-USER builduser
-WORKDIR /tmp
-RUN yay -S --noconfirm micromamba-bin && \
-    yay -Sc --noconfirm && \
-    rm -rf /home/builduser/.cache/* /home/builduser/.cargo/registry/* /tmp/*
-WORKDIR /
-USER root
-
-# 清理 root 缓存（作为 root 执行）
-RUN rm -rf /root/.cache/* /tmp/*
-
+# 安装 micromamba（官方二进制，避免 AUR 网络抖动）
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    case "$arch" in \
+      x86_64) mamba_arch='linux-64' ;; \
+      aarch64|arm64) mamba_arch='linux-aarch64' ;; \
+      *) echo "Unsupported arch: $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fL --retry 5 --retry-delay 2 --connect-timeout 20 \
+      "https://micro.mamba.pm/api/micromamba/${mamba_arch}/latest" -o /tmp/micromamba.tar.bz2; \
+    mkdir -p /opt/micromamba/bin; \
+    tar -xjf /tmp/micromamba.tar.bz2 -C /tmp bin/micromamba; \
+    install -m 0755 /tmp/bin/micromamba /opt/micromamba/bin/micromamba; \
+    rm -rf /tmp/micromamba.tar.bz2 /tmp/bin /root/.cache/* /tmp/*
 # 验证 micromamba 安装
 RUN micromamba --version
 
