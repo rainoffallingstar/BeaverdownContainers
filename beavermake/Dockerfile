@@ -22,9 +22,24 @@ RUN useradd -m builduser && \
 # 安装 yay
 USER builduser
 WORKDIR /tmp
-RUN git clone --depth=1 https://aur.archlinux.org/yay-bin.git && \
-    cd yay-bin && makepkg -si --noconfirm && \
-    cd .. && rm -rf yay-bin
+RUN set -eux; \
+    git config --global http.version HTTP/1.1; \
+    for i in 1 2 3; do \
+      if git clone --depth=1 https://aur.archlinux.org/yay-bin.git; then \
+        break; \
+      fi; \
+      rm -rf yay-bin; \
+      sleep "$((i * 2))"; \
+    done; \
+    if [ ! -d yay-bin ]; then \
+      curl -fL --retry 5 --retry-delay 2 --connect-timeout 20 \
+        -o yay-bin.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/yay-bin.tar.gz; \
+      tar -xzf yay-bin.tar.gz; \
+    fi; \
+    cd yay-bin; \
+    makepkg -si --noconfirm; \
+    cd /tmp; \
+    rm -rf yay-bin yay-bin.tar.gz
 WORKDIR /
 USER root
 
