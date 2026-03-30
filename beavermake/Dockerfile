@@ -79,7 +79,7 @@ RUN set -eux; \
     install -m 0755 /tmp/bin/micromamba /opt/micromamba/bin/micromamba; \
     rm -rf /tmp/micromamba.tar.bz2 /tmp/bin /root/.cache/* /tmp/*
 # 验证 micromamba 安装
-RUN micromamba --version
+RUN /opt/micromamba/bin/micromamba --version
 
 # 安装 Rust
 RUN pacman -S --noconfirm rustup && \
