@@ -13,6 +13,7 @@ RUN pacman -Sy --noconfirm && \
         poppler \
         libxtst \
         openssh \
+        bubblewrap \
         jdk-openjdk && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
@@ -48,7 +49,7 @@ RUN echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')
 
 # 安装图形库依赖
 RUN pacman -S --needed --noconfirm \
-    cairo pango freetype2 libpng libjpeg-turbo libtiff && \
+    cairo pango freetype2 libpng libjpeg-turbo libtiff noto-fonts-cjk && \
     pacman -Sc --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/* && \
     R_LIBS=/usr/lib/R/library R -e "pak::pak('r-lib/ragg', ask = FALSE)" && \
