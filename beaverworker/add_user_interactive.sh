@@ -195,6 +195,10 @@ create_user() {
         echo "$username:$password" | chpasswd
         log_success "User '$username' created successfully"
     fi
+
+    # 确保 home 目录权限正确
+    chown -R "$username:$username" "/home/$username"
+    chmod 755 "/home/$username"
 }
 
 # Configure sudo
@@ -261,6 +265,18 @@ source /opt/micromamba/etc/profile.d/micromamba.sh
 EOF
 
     chown "$username:$username" "$bashrc"
+
+    # R: 确保用户库路径存在，避免 install.packages 权限报错
+    mkdir -p "/home/$username/.local/share/R"
+    chown -R "$username:$username" "/home/$username/.local"
+
+    local renviron="/home/$username/.Renviron"
+    touch "$renviron"
+    if ! grep -q '^R_LIBS_USER=' "$renviron"; then
+        echo 'R_LIBS_USER=~/.local/share/R/%p-library/%V' >> "$renviron"
+    fi
+    chown "$username:$username" "$renviron"
+
     log_success "User environment configured"
 }
 

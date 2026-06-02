@@ -52,7 +52,7 @@ RUN pacman -S --noconfirm python python-pip r nodejs npm go && \
 # 安装 R pak 包管理器
 RUN mkdir -p /root/.R && \
     echo "options(repos = c(CRAN = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/'))" > /root/.Rprofile && \
-    R_LIBS_USER= R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
+    R_LIBS=/usr/lib/R/library R -e "install.packages('pak', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" && \
     rm -rf /tmp/Rtmp* /root/.R/pack/
 
 # 配置 R：默认安装到用户目录，避免无权限写系统库
