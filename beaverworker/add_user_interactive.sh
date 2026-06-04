@@ -252,8 +252,9 @@ configure_bashrc() {
 
     local bashrc="/home/$username/.bashrc"
 
-    # Add PATH configurations
-    cat >> "$bashrc" << 'EOF'
+    # Add PATH configurations (skip if already present)
+    if ! grep -q '# Beaverworker environment' "$bashrc" 2>/dev/null; then
+        cat >> "$bashrc" << 'EOF'
 
 # Beaverworker environment
 export PATH=/opt/micromamba/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
@@ -263,6 +264,7 @@ source /opt/micromamba/etc/profile.d/micromamba.sh
 # Note: Rust environment needs manual initialization
 # Run: source ~/.cargo/env when needed
 EOF
+    fi
 
     chown "$username:$username" "$bashrc"
 

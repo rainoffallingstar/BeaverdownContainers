@@ -156,7 +156,7 @@ RUN echo "export PATH=/opt/micromamba/bin:\$HOME/.cargo/bin:\$HOME/.local/bin:\$
 
 # ===== 阶段 8: 启动脚本 =====
 RUN cat > /usr/local/bin/start-services.sh <<'EOF' && rm -rf /tmp/*
-#!/bin/env bash
+#!/usr/bin/env bash
 set -e
 
 # 生成 SSH 主机密钥

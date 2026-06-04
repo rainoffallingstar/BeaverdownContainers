@@ -124,13 +124,6 @@ NODE_PATH=/home/fallingstar10/.local/lib/node_modules:/root/.local/lib/node_modu
 
 ### Building Containers
 
-**Using R scripts**:
-```r
-# Requires dockerR package
-source("build_image.R")  # Build all containers
-source("pull_image.R")   # Pull pre-built images
-```
-
 **Using Docker directly**:
 ```bash
 # Build beavermake
@@ -459,12 +452,9 @@ BeaverdownContainers/
 ├── .github/workflows/
 │   ├── beavermake.yml      # CI/CD for beavermake
 │   └── beaverworker.yml    # CI/CD for beaverworker
-├── build_image.R           # R script to build containers
-├── pull_image.R            # R script to pull images
 ├── README.md               # User-facing documentation
 ├── CLAUDE.md               # This file
-├── ADD_USER.sh             # Legacy user management script
-└── add_user.sh             # Interactive user management tool (copied to beaverworker)
+└── add_user_interactive.sh # Interactive user management tool (copied into beaverworker)
 ```
 
 ---
