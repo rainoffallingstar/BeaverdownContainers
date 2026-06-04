@@ -202,3 +202,6 @@ EXPOSE 2222 8889 8080 8787
 
 # ===== 容器入口 =====
 ENTRYPOINT ["/usr/local/bin/start-services.sh"]
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD ssh -q fallingstar10@localhost -p 2222 exit || exit 1

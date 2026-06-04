@@ -443,10 +443,7 @@ BeaverdownContainers/
 ├── beaverworker/
 │   └── Dockerfile          # Unified workspace
 ├── .depress/               # Backup of deprecated containers
-│   ├── beaverstudio/
-│   ├── beaverjupyter/
-│   ├── beaverstudio.yml
-│   └── beaverjupyter.yml
+│   └── (archived containers)
 ├── .github/workflows/
 │   ├── beavermake.yml      # CI/CD for beavermake
 │   └── beaverworker.yml    # CI/CD for beaverworker

@@ -1,0 +1,21 @@
+services:
+  beavermake:
+    build:
+      context: ./beavermake
+    image: fallingstar10/beavermake:latest
+    container_name: beavermake
+    stdin_open: true
+    tty: true
+
+  beaverworker:
+    build:
+      context: ./beaverworker
+    image: fallingstar10/beaverworker:latest
+    container_name: beaverworker
+    ports:
+      - "2222:2222"
+      - "8889:8889"
+      - "8080:8080"
+      - "8787:8787"
+    stdin_open: true
+    tty: true

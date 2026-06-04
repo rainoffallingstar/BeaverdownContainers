@@ -100,3 +100,7 @@ RUN python --version && R --version && node --version && npm --version && \
     micromamba --version && rustc --version && cargo --version && go version
 
 CMD ["/bin/bash"]
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD python --version && R --version && node --version && cargo --version || exit 1

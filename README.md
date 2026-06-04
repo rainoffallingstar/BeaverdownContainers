@@ -412,7 +412,7 @@ docker restart beaverworker
 
 - **🐧 Arch Linux** - 轻量、灵活的 Linux 发行版
 - **📊 R 语言社区** - 丰富的统计分析和可视化包
-- **🧬 Bioconductor** - 生物信息学 R 包生态系统
+- **📦 pak** - 高效的 R 包管理器
 - **🔧 Posit** - Ark, Air 等 R 开发工具
 - **📦 Conda/Mamba** - Python 包和环境管理
 - **🐋 Docker** - 容器化技术标准
