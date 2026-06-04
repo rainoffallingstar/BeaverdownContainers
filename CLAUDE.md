@@ -76,13 +76,11 @@ export GOPATH=$HOME/go
 
 **Components**:
 
-**R Packages (6 groups, 40+ packages)**:
+**R Packages**:
 - **Group 1**: Shiny ecosystem (DT, shinyWidgets, shiny, bslib)
 - **Group 2**: Statistics and visualization (plotly, pROC, tidyverse)
-- **Group 3**: Bioinformatics core (Rsamtools, rtracklayer, GenomicRanges)
-- **Group 4**: Enrichment analysis (clusterProfiler, org.Hs.eg.db, KEGGREST)
-- **Group 5**: Advanced analysis (NOISeq, TCGAbiolinks, Seurat)
 - **Group 6**: Machine learning (mlr3verse)
+- **Group 7**: Developer tools (languageserver, lintr)
 
 **Services**:
 - **JupyterLab**: Port 8889 (manual start required)

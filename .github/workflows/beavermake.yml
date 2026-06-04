@@ -39,3 +39,8 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/beavermake:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Verify built image
+        run: |
+          docker run --rm ${{ secrets.DOCKER_HUB_USERNAME }}/beavermake:latest \
+            sh -c "python --version && R --version && node --version && cargo --version && go version"

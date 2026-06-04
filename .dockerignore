@@ -1,0 +1,10 @@
+ .git/
+ .gitignore
+ .gitattributes
+ .depress/
+ .github/
+ CLAUDE.md
+ README.md
+ LICENSE
+ *.md
+ .DS_Store

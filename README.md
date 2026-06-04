@@ -13,7 +13,7 @@ BeaverdownContainers 是 **Beaverdown2 生物信息学工作流系统**的高效
 - 🐧 **基于 Arch Linux** - 轻量、灵活的 Linux 发行版
 - 🧰 **yay AUR 助手** - 强大的 Arch 用户仓库包管理
 - 🐍 **Python 3** - 完整的 Python 开发环境
-- 📊 **R 语言环境** - 完整的统计分析生态系统（40+ 包）
+- 📊 **R 语言环境** - 完整的统计分析生态系统（Shiny、tidyverse、mlr3verse 等）
 - 📓 **JupyterLab** - 交互式计算环境（集成 Ark 增强）
 - 🔧 **Ark + Air** - Posit Dev 开发工具链
 - 💡 **R LSP 支持** - languageserver + lintr 代码质量工具
@@ -59,9 +59,7 @@ graph TD
 
 - **继承自**: `fallingstar10/beavermake:latest`
 - **R 语言环境**:
-  - 40+ R 包（Shiny, 统计, 生信, 富集, 高级, ML）
-  - Bioconductor 核心包
-  - GitHub 专用包
+  - R 包（Shiny 生态、统计与可视化、机器学习等）
 - **集成功能**:
   - 📓 **JupyterLab** - 已安装，需手动启动（端口 8889）
     - 集成 **Ark** (Posit Dev) - 增强 JupyterLab 功能
@@ -127,16 +125,6 @@ sudo add-user
 ```
 
 脚本将引导您完成用户创建过程。
-
-### 使用 R/dockerR 包
-
-```r
-# 拉取镜像
-source("pull_image.R")
-
-# 从源码构建
-source("build_image.R")
-```
 
 ---
 
